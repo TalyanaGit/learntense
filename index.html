@@ -205,6 +205,13 @@ button:active {
 .wrong-example {
   background: #fff0f0;
 }
+.lesson-content {
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+
 </style>
 </head>
 
@@ -466,8 +473,8 @@ function showLesson() {
     </h2>
 
     <div class="lesson-content">
-      ${escapeHTML(lesson.content)}
-    </div>
+  ${formatLessonContent(lesson.content)}
+</div>
 
     ${
       lesson.key_rule
@@ -852,6 +859,14 @@ function restartQuiz() {
 // ---------------------------
 // SECURITY / DISPLAY HELPER
 // ---------------------------
+
+function formatLessonContent(text) {
+  if (!text) return "";
+
+  return escapeHTML(text)
+    .replace(/\\n/g, "<br><br>")
+    .replace(/\n/g, "<br><br>");
+}
 
 function escapeHTML(text) {
 
