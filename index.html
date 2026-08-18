@@ -296,34 +296,44 @@ async function startQuiz() {
 
 async function loadQuestions() {
 
+  const SIMPLE_PRESENT_ID =
+    1; // We will verify this below
+
   const { data, error } =
-    await supabaseClient
-      .from("questions")
-      .select("*")
-      .eq("active", true)
-      .order("sort_order");
+    await supabaseClient.rpc(
+      "get_learning_questions",
+      {
+        p_user_id: currentUser.id,
+        p_tense_id: SIMPLE_PRESENT_ID,
+        p_limit: 10
+      }
+    );
 
   if (error) {
 
-    document.getElementById("quiz")
-      .innerHTML = `
-        <div class="error">
-          Unable to load questions.<br><br>
-          ${error.message}
-        </div>
-      `;
+    console.error(error);
+
+    document.getElementById("quiz").innerHTML = `
+      <div class="error">
+        Unable to load learning questions.<br><br>
+        ${error.message}
+      </div>
+    `;
 
     return;
   }
 
   if (!data || data.length === 0) {
 
-    document.getElementById("quiz")
-      .innerHTML = `
-        <div class="error">
-          No questions found.
-        </div>
-      `;
+    document.getElementById("quiz").innerHTML = `
+      <div class="card">
+        <h2>🎉 Amazing!</h2>
+        <p>
+          You have mastered all the available
+          Simple Present questions.
+        </p>
+      </div>
+    `;
 
     return;
   }
