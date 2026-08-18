@@ -231,45 +231,20 @@ let currentQuestion = 0;
 let score = 0;
 let answered = false;
 let currentUser = null;
+let lessons = [];
+let currentLesson = 0;
 
 
 // ---------------------------
 // START QUIZ
 // ---------------------------
 
-async function ensureUser() {
-
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
-
-  if (sessionData.session) {
-    currentUser = sessionData.session.user;
-    return true;
-  }
-
-  const { data, error } =
-    await supabaseClient.auth.signInAnonymously();
-
-  if (error) {
-    console.error("Anonymous login error:", error);
-    return false;
-  }
-
-  currentUser = data.user;
-
-  return true;
-}
-
-
-
 async function startQuiz() {
 
   const loggedIn = await ensureUser();
 
   if (!loggedIn) {
-
     alert("Unable to start learner session.");
-
     return;
   }
 
@@ -279,20 +254,119 @@ async function startQuiz() {
   document.getElementById("quiz")
     .classList.remove("hidden");
 
-  document.getElementById("quiz")
-    .innerHTML = `
-      <div class="loading">
-        Loading questions...
-      </div>
-    `;
+  document.getElementById("quiz").innerHTML = `
+    <div class="loading">
+      Loading lesson...
+    </div>
+  `;
 
-  await loadQuestions();
+  await loadLesson();
 }
 
 
 // ---------------------------
 // LOAD QUESTIONS FROM SUPABASE
 // ---------------------------
+
+async function loadLesson() {
+
+  const { data, error } =
+    await supabaseClient
+      .from("tense_lessons")
+      .select("*")
+      .eq("tense_id", 1)
+      .eq("active", true)
+      .order("sort_order");
+
+  if (error) {
+
+    console.error(error);
+
+    document.getElementById("quiz").innerHTML = `
+      <div class="error">
+        Unable to load lesson.<br><br>
+        ${error.message}
+      </div>
+    `;
+
+    return;
+  }
+
+  if (!data || data.length === 0) {
+
+    await loadQuestions();
+    return;
+
+  }
+
+  lessons = data;
+  currentLesson = 0;
+
+  showLesson();
+}
+
+function showLesson() {
+
+  const lesson = lessons[currentLesson];
+
+  document.getElementById("quiz").innerHTML = `
+
+    <div class="progress">
+      Lesson ${currentLesson + 1} of ${lessons.length}
+    </div>
+
+    <h2>${escapeHTML(lesson.title)}</h2>
+
+    <div class="explanation"
+         style="white-space: pre-line;">
+      ${escapeHTML(lesson.content)}
+    </div>
+
+    ${
+      currentLesson < lessons.length - 1
+
+      ? `
+        <button onclick="nextLesson()">
+          Next
+        </button>
+      `
+
+      : `
+        <button onclick="startPractice()">
+          🚀 Start Practice
+        </button>
+      `
+    }
+
+  `;
+}
+
+function nextLesson() {
+
+  currentLesson++;
+
+  if (currentLesson >= lessons.length) {
+
+    startPractice();
+
+    return;
+  }
+
+  showLesson();
+}
+
+async function startPractice() {
+
+  document.getElementById("quiz").innerHTML = `
+    <div class="loading">
+      Preparing your practice questions...
+    </div>
+  `;
+
+  await loadQuestions();
+}
+
+
 
 async function loadQuestions() {
 
