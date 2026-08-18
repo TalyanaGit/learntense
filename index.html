@@ -230,13 +230,48 @@ let questions = [];
 let currentQuestion = 0;
 let score = 0;
 let answered = false;
+let currentUser = null;
 
 
 // ---------------------------
 // START QUIZ
 // ---------------------------
 
+async function ensureUser() {
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionData.session) {
+    currentUser = sessionData.session.user;
+    return true;
+  }
+
+  const { data, error } =
+    await supabaseClient.auth.signInAnonymously();
+
+  if (error) {
+    console.error("Anonymous login error:", error);
+    return false;
+  }
+
+  currentUser = data.user;
+
+  return true;
+}
+
+
+
 async function startQuiz() {
+
+  const loggedIn = await ensureUser();
+
+  if (!loggedIn) {
+
+    alert("Unable to start learner session.");
+
+    return;
+  }
 
   document.getElementById("home")
     .classList.add("hidden");
@@ -362,7 +397,7 @@ function showQuestion() {
 // CHECK ANSWER
 // ---------------------------
 
-function checkAnswer(selectedIndex, selectedButton) {
+async function checkAnswer(selectedIndex, selectedButton) {
 
   if (answered) return;
 
@@ -379,13 +414,17 @@ function checkAnswer(selectedIndex, selectedButton) {
 
   if (selectedIndex === q.correct_index) {
 
-    score++;
+  score++;
 
-    selectedButton.classList.add("correct");
+  selectedButton.classList.add("correct");
 
-  } else {
+  await saveProgress(q.id, true);
 
-    selectedButton.classList.add("wrong");
+} else {
+
+  selectedButton.classList.add("wrong");
+
+  await saveProgress(q.id, false);
 
     buttons[q.correct_index]
       .classList.add("correct");
@@ -403,6 +442,76 @@ function checkAnswer(selectedIndex, selectedButton) {
     .classList.remove("hidden");
 }
 
+
+async function saveProgress(questionId, isCorrect) {
+
+  if (!currentUser) return;
+
+  const { data: existing, error: fetchError } =
+    await supabaseClient
+      .from("user_question_progress")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .eq("question_id", questionId)
+      .maybeSingle();
+
+  if (fetchError) {
+    console.error("Progress fetch error:", fetchError);
+    return;
+  }
+
+  if (!existing) {
+
+    const { error } =
+      await supabaseClient
+        .from("user_question_progress")
+        .insert({
+          user_id: currentUser.id,
+          question_id: questionId,
+          attempts: 1,
+          mistakes: isCorrect ? 0 : 1,
+          consecutive_correct: isCorrect ? 1 : 0,
+          mastered: false,
+          last_attempt: new Date().toISOString()
+        });
+
+    if (error) {
+      console.error("Progress insert error:", error);
+    }
+
+    return;
+  }
+
+  const newAttempts =
+    existing.attempts + 1;
+
+  const newMistakes =
+    existing.mistakes + (isCorrect ? 0 : 1);
+
+  const newConsecutive =
+    isCorrect
+      ? existing.consecutive_correct + 1
+      : 0;
+
+  const mastered =
+    newConsecutive >= 5;
+
+  const { error } =
+    await supabaseClient
+      .from("user_question_progress")
+      .update({
+        attempts: newAttempts,
+        mistakes: newMistakes,
+        consecutive_correct: newConsecutive,
+        mastered: mastered,
+        last_attempt: new Date().toISOString()
+      })
+      .eq("id", existing.id);
+
+  if (error) {
+    console.error("Progress update error:", error);
+  }
+}
 
 // ---------------------------
 // NEXT QUESTION
