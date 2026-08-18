@@ -64,31 +64,54 @@ button {
   cursor: pointer;
   background: #315efb;
   color: white;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
 }
 
 button:active {
   transform: scale(.98);
 }
 
+
+/* =========================
+   MAIN QUIZ OPTIONS
+   ========================= */
+
 .option {
   background: #f1f4f9;
   color: #172033;
   text-align: left;
+  border: 2px solid transparent;
 }
 
 .option:hover {
   background: #e6ebf5;
+  border-color: #315efb;
 }
+
+
+/* =========================
+   ANSWER FEEDBACK
+   ========================= */
 
 .correct {
   background: #d9f7df !important;
   color: #126b2f !important;
+  border-color: #42a85f !important;
 }
 
 .wrong {
   background: #ffe0e0 !important;
   color: #9b1c1c !important;
+  border-color: #e26b6b !important;
 }
+
+
+/* =========================
+   GENERAL
+   ========================= */
 
 .hidden {
   display: none;
@@ -106,6 +129,7 @@ button:active {
   padding: 15px;
   margin-top: 18px;
   border-radius: 8px;
+  line-height: 1.6;
 }
 
 .score {
@@ -127,6 +151,11 @@ button:active {
   padding: 15px;
   border-radius: 10px;
 }
+
+
+/* =========================
+   LESSON HEADER
+   ========================= */
 
 .lesson-header {
   text-align: center;
@@ -159,12 +188,21 @@ button:active {
   margin-bottom: 18px;
 }
 
+
+/* =========================
+   LESSON CONTENT
+   ========================= */
+
 .lesson-content {
   font-size: 17px;
   line-height: 1.8;
-  white-space: pre-line;
   margin-bottom: 20px;
 }
+
+
+/* =========================
+   RULE CARD
+   ========================= */
 
 .rule-card {
   background: #fff7d6;
@@ -184,11 +222,17 @@ button:active {
   line-height: 1.6;
 }
 
+
+/* =========================
+   EXAMPLE CARDS
+   ========================= */
+
 .example-card {
   background: #f7f9fc;
   border-radius: 14px;
   padding: 15px;
   margin: 12px 0;
+  border: 1px solid #e5e7eb;
 }
 
 .example-label {
@@ -204,6 +248,7 @@ button:active {
 
 .wrong-example {
   background: #fff0f0;
+  border-color: #f3b4b4;
 }
 
 
@@ -232,37 +277,174 @@ button:active {
   font-size: 19px;
   font-weight: 700;
   line-height: 1.6;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
 }
 
+
+/* =========================
+   QUICK CHECK OPTIONS
+   ========================= */
+
 .mini-option {
-  margin-top: 10px;
+  position: relative;
+
+  width: 100%;
+
+  background: white;
+  color: #172033;
+
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+
+  padding: 15px 16px 15px 50px;
+
+  margin-top: 12px;
+
+  text-align: left;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
+
+
+/* Circle / bullet */
+
+.mini-option::before {
+  content: "○";
+
+  position: absolute;
+
+  left: 17px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 25px;
+  font-weight: 400;
+
+  color: #667085;
+}
+
+
+/* Hover / touch feedback */
+
+.mini-option:hover {
+  border-color: #315efb;
+  background: #f5f8ff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(49,94,251,0.12);
+}
+
+
+/* Correct answer */
+
+.mini-option.correct::before {
+  content: "✓";
+  font-weight: 800;
+  color: #126b2f;
+}
+
+
+/* Wrong answer */
+
+.mini-option.wrong::before {
+  content: "✕";
+  font-weight: 800;
+  color: #9b1c1c;
+}
+
+
+/* =========================
+   QUICK CHECK FEEDBACK
+   ========================= */
 
 .mini-feedback {
   margin-top: 16px;
+
   padding: 15px;
+
   background: white;
+
   border-radius: 14px;
+
   line-height: 1.6;
+
   font-size: 16px;
+
+  border: 1px solid #e5e7eb;
 }
+
+
+/* =========================
+   LESSON CONTINUE BUTTON
+   ========================= */
+
+/* Normal lessons:
+   Continue is fully visible */
 
 #lessonContinueButton {
-  opacity: 0.55;
+  opacity: 1;
+  cursor: pointer;
+}
+
+
+/* Lessons with unanswered Quick Check */
+
+#lessonContinueButton:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-#lessonContinueButton:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
+
+/* After Quick Check is answered */
 
 #lessonContinueButton.ready {
   opacity: 1;
   cursor: pointer;
 }
 
+
+/* =========================
+   MOBILE TOUCH IMPROVEMENT
+   ========================= */
+
+@media (max-width: 480px) {
+
+  .app {
+    padding: 14px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .logo {
+    font-size: 30px;
+  }
+
+  .lesson-title {
+    font-size: 25px;
+  }
+
+  .mini-question {
+    font-size: 18px;
+  }
+
+  .mini-option {
+    min-height: 54px;
+    font-size: 17px;
+  }
+
+}
 </style>
 </head>
 
