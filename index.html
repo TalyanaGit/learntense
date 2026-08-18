@@ -205,12 +205,63 @@ button:active {
 .wrong-example {
   background: #fff0f0;
 }
-.lesson-content {
-  font-size: 17px;
-  line-height: 1.8;
-  margin-bottom: 20px;
+
+
+/* =========================
+   QUICK CHECK
+   ========================= */
+
+.mini-check {
+  background: #eef4ff;
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 26px;
+  border: 1px solid #d9e5ff;
 }
 
+.mini-check-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.mini-question {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.mini-option {
+  margin-top: 10px;
+}
+
+.mini-feedback {
+  margin-top: 16px;
+  padding: 15px;
+  background: white;
+  border-radius: 14px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+#lessonContinueButton {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#lessonContinueButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#lessonContinueButton.ready {
+  opacity: 1;
+  cursor: pointer;
+}
 
 </style>
 </head>
@@ -432,6 +483,7 @@ function showLesson() {
 
     examplesHTML += `
       <div class="example-card ${isWrong ? "wrong-example" : ""}">
+
         <div class="example-label">
           ${escapeHTML(example.label)}
         </div>
@@ -439,9 +491,57 @@ function showLesson() {
         <div class="example-text">
           ${escapeHTML(example.text)}
         </div>
+
       </div>
     `;
   });
+
+
+  /*
+   * QUICK CHECK
+   */
+
+  let quickCheckHTML = "";
+
+  if (lesson.check_question) {
+
+    quickCheckHTML = `
+
+      <div class="mini-check">
+
+        <div class="mini-check-title">
+          🧩 Quick Check
+        </div>
+
+        <div class="mini-question">
+          ${formatLessonContent(lesson.check_question)}
+        </div>
+
+        <div id="mini-options"></div>
+
+        <div
+          id="mini-feedback"
+          class="mini-feedback hidden">
+        </div>
+
+      </div>
+
+    `;
+  }
+
+
+  /*
+   * CONTINUE BUTTON
+   */
+
+  const hasQuickCheck =
+    !!lesson.check_question;
+
+  const buttonText =
+    currentLesson < lessons.length - 1
+      ? "Continue →"
+      : "🚀 Start Practice";
+
 
   document.getElementById("quiz").innerHTML = `
 
@@ -457,6 +557,7 @@ function showLesson() {
       </div>
 
       <div class="progress-bar">
+
         <div
           class="progress-fill"
           style="width:${
@@ -464,22 +565,27 @@ function showLesson() {
             lessons.length) * 100
           }%">
         </div>
+
       </div>
 
     </div>
+
 
     <h2 class="lesson-title">
       ${escapeHTML(lesson.title)}
     </h2>
 
+
     <div class="lesson-content">
-  ${formatLessonContent(lesson.content)}
-</div>
+      ${formatLessonContent(lesson.content)}
+    </div>
+
 
     ${
       lesson.key_rule
       ? `
         <div class="rule-card">
+
           <div class="rule-title">
             ⭐ Remember
           </div>
@@ -487,10 +593,12 @@ function showLesson() {
           <div class="rule-text">
             ${escapeHTML(lesson.key_rule)}
           </div>
+
         </div>
       `
       : ""
     }
+
 
     ${
       examplesHTML
@@ -502,24 +610,193 @@ function showLesson() {
         : ""
     }
 
-    ${
-      currentLesson < lessons.length - 1
 
-      ? `
-        <button onclick="nextLesson()">
-          Continue →
-        </button>
-      `
+    ${quickCheckHTML}
 
-      : `
-        <button onclick="startPractice()">
-          🚀 Start Practice
-        </button>
-      `
-    }
+
+    <button
+      id="lessonContinueButton"
+      ${hasQuickCheck ? "disabled" : ""}
+      onclick="${
+        currentLesson < lessons.length - 1
+          ? "nextLesson()"
+          : "startPractice()"
+      }">
+
+      ${buttonText}
+
+    </button>
 
   `;
+
+
+  /*
+   * CREATE QUICK CHECK OPTIONS
+   */
+
+  if (lesson.check_question) {
+
+    const miniOptions =
+      document.getElementById("mini-options");
+
+    let options = [];
+
+    if (Array.isArray(lesson.check_options)) {
+
+      options = lesson.check_options;
+
+    } else {
+
+      try {
+
+        options =
+          JSON.parse(lesson.check_options);
+
+      } catch (error) {
+
+        console.error(
+          "Quick check options error:",
+          error
+        );
+
+      }
+    }
+
+
+    options.forEach((option, index) => {
+
+      const button =
+        document.createElement("button");
+
+      button.className = "option mini-option";
+
+      button.textContent = option;
+
+      button.onclick = () =>
+        answerMiniCheck(index, button);
+
+      miniOptions.appendChild(button);
+
+    });
+
+  }
+
 }
+
+function answerMiniCheck(
+  selectedIndex,
+  selectedButton
+) {
+
+  const lesson =
+    lessons[currentLesson];
+
+
+  const buttons =
+    document.querySelectorAll(
+      "#mini-options .mini-option"
+    );
+
+
+  /*
+   * Prevent multiple answers
+   */
+
+  buttons.forEach(button => {
+
+    button.disabled = true;
+
+  });
+
+
+  const feedback =
+    document.getElementById(
+      "mini-feedback"
+    );
+
+
+  const continueButton =
+    document.getElementById(
+      "lessonContinueButton"
+    );
+
+
+  /*
+   * CORRECT
+   */
+
+  if (
+    selectedIndex ===
+    lesson.check_correct_index
+  ) {
+
+    selectedButton
+      .classList.add("correct");
+
+    feedback.innerHTML = `
+      🎉 <strong>Correct!</strong>
+      <br><br>
+      ${escapeHTML(
+        lesson.check_explanation
+      )}
+    `;
+
+  }
+
+
+  /*
+   * WRONG
+   */
+
+  else {
+
+    selectedButton
+      .classList.add("wrong");
+
+
+    if (
+      buttons[
+        lesson.check_correct_index
+      ]
+    ) {
+
+      buttons[
+        lesson.check_correct_index
+      ].classList.add("correct");
+
+    }
+
+
+    feedback.innerHTML = `
+      💡 <strong>Let's learn this!</strong>
+      <br><br>
+      ${escapeHTML(
+        lesson.check_explanation
+      )}
+    `;
+
+  }
+
+
+  feedback.classList.remove("hidden");
+
+
+  /*
+   * NOW ALLOW CONTINUE
+   */
+
+  if (continueButton) {
+
+    continueButton.disabled = false;
+
+    continueButton.classList.add(
+      "ready"
+    );
+
+  }
+
+}
+
 
 function nextLesson() {
 
