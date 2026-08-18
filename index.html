@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
 <title>LearnTense</title>
 
 <style>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -20,11 +27,46 @@ body {
 }
 
 .app {
+  width: 100%;
   max-width: 600px;
-  margin: auto;
   min-height: 100vh;
+  margin: auto;
   padding: 20px;
 }
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  margin-top: 12px;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  background: #315efb;
+  color: white;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
 
 header {
   text-align: center;
@@ -41,77 +83,29 @@ header {
   margin-top: 8px;
 }
 
+
+/* =====================================================
+   CARD
+===================================================== */
+
 .card {
   background: white;
   border-radius: 20px;
   padding: 24px;
   margin-top: 18px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+
+  box-shadow:
+    0 5px 20px rgba(0,0,0,0.07);
 }
 
 h2 {
   margin-top: 0;
 }
 
-button {
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  padding: 15px;
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  background: #315efb;
-  color: white;
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease,
-    opacity 0.15s ease;
-}
 
-button:active {
-  transform: scale(.98);
-}
-
-
-/* =========================
-   MAIN QUIZ OPTIONS
-   ========================= */
-
-.option {
-  background: #f1f4f9;
-  color: #172033;
-  text-align: left;
-  border: 2px solid transparent;
-}
-
-.option:hover {
-  background: #e6ebf5;
-  border-color: #315efb;
-}
-
-
-/* =========================
-   ANSWER FEEDBACK
-   ========================= */
-
-.correct {
-  background: #d9f7df !important;
-  color: #126b2f !important;
-  border-color: #42a85f !important;
-}
-
-.wrong {
-  background: #ffe0e0 !important;
-  color: #9b1c1c !important;
-  border-color: #e26b6b !important;
-}
-
-
-/* =========================
+/* =====================================================
    GENERAL
-   ========================= */
+===================================================== */
 
 .hidden {
   display: none;
@@ -121,22 +115,6 @@ button:active {
   color: #667085;
   font-size: 14px;
   margin-bottom: 15px;
-}
-
-.explanation {
-  background: #f5f8ff;
-  border-left: 4px solid #315efb;
-  padding: 15px;
-  margin-top: 18px;
-  border-radius: 8px;
-  line-height: 1.6;
-}
-
-.score {
-  font-size: 42px;
-  font-weight: 800;
-  text-align: center;
-  margin: 20px 0;
 }
 
 .loading {
@@ -150,12 +128,26 @@ button:active {
   background: #fee4e2;
   padding: 15px;
   border-radius: 10px;
+  line-height: 1.5;
+}
+
+.explanation {
+  background: #f5f8ff;
+
+  border-left: 4px solid #315efb;
+
+  padding: 15px;
+  margin-top: 18px;
+
+  border-radius: 8px;
+
+  line-height: 1.6;
 }
 
 
-/* =========================
+/* =====================================================
    LESSON HEADER
-   ========================= */
+===================================================== */
 
 .lesson-header {
   text-align: center;
@@ -167,21 +159,6 @@ button:active {
   margin-bottom: 8px;
 }
 
-.progress-bar {
-  height: 8px;
-  background: #e5e7eb;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: #315efb;
-  border-radius: 20px;
-  transition: width .3s ease;
-}
-
 .lesson-title {
   font-size: 27px;
   line-height: 1.25;
@@ -189,31 +166,100 @@ button:active {
 }
 
 
-/* =========================
+/* =====================================================
+   LESSON PROGRESS BAR
+===================================================== */
+
+.progress-bar {
+  height: 8px;
+
+  background: #e5e7eb;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  margin-top: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+
+  background: #315efb;
+
+  border-radius: 20px;
+
+  transition:
+    width .3s ease;
+}
+
+
+/* =====================================================
    LESSON CONTENT
-   ========================= */
+===================================================== */
 
 .lesson-content {
   font-size: 17px;
-  line-height: 1.8;
+  line-height: 1.65;
+
   margin-bottom: 20px;
 }
 
 
-/* =========================
+/*
+   Each lesson point becomes a separate block.
+   This prevents "\n" from appearing on screen.
+*/
+
+.lesson-point {
+  position: relative;
+
+  background: #f8fafc;
+
+  border-radius: 12px;
+
+  padding: 12px 14px 12px 40px;
+
+  margin: 10px 0;
+
+  border: 1px solid #e5e7eb;
+}
+
+.lesson-point::before {
+  content: "•";
+
+  position: absolute;
+
+  left: 16px;
+  top: 10px;
+
+  font-size: 24px;
+  font-weight: 800;
+
+  color: #315efb;
+}
+
+
+/* =====================================================
    RULE CARD
-   ========================= */
+===================================================== */
 
 .rule-card {
   background: #fff7d6;
+
   border-radius: 16px;
+
   padding: 18px;
+
   margin: 20px 0;
+
+  border: 1px solid #f2df91;
 }
 
 .rule-title {
   font-size: 17px;
   font-weight: 800;
+
   margin-bottom: 8px;
 }
 
@@ -223,21 +269,26 @@ button:active {
 }
 
 
-/* =========================
-   EXAMPLE CARDS
-   ========================= */
+/* =====================================================
+   EXAMPLES
+===================================================== */
 
 .example-card {
   background: #f7f9fc;
+
   border-radius: 14px;
+
   padding: 15px;
+
   margin: 12px 0;
+
   border: 1px solid #e5e7eb;
 }
 
 .example-label {
   font-size: 14px;
   font-weight: 800;
+
   margin-bottom: 7px;
 }
 
@@ -248,43 +299,55 @@ button:active {
 
 .wrong-example {
   background: #fff0f0;
+
   border-color: #f3b4b4;
 }
 
 
-/* =========================
+/* =====================================================
    QUICK CHECK
-   ========================= */
+===================================================== */
 
 .mini-check {
   background: #eef4ff;
+
   border-radius: 18px;
+
   padding: 20px;
+
   margin-top: 26px;
+
   border: 1px solid #d9e5ff;
 }
 
 .mini-check-title {
   font-size: 20px;
   font-weight: 800;
+
   margin-bottom: 16px;
 }
 
 .mini-question {
   background: white;
+
   border-radius: 14px;
+
   padding: 16px;
+
   font-size: 19px;
   font-weight: 700;
+
   line-height: 1.6;
+
   margin-bottom: 14px;
+
   border: 1px solid #e5e7eb;
 }
 
 
-/* =========================
+/* =====================================================
    QUICK CHECK OPTIONS
-   ========================= */
+===================================================== */
 
 .mini-option {
   position: relative;
@@ -295,6 +358,7 @@ button:active {
   color: #172033;
 
   border: 2px solid #cbd5e1;
+
   border-radius: 14px;
 
   padding: 15px 16px 15px 50px;
@@ -316,7 +380,7 @@ button:active {
 }
 
 
-/* Circle / bullet */
+/* clickable bullet */
 
 .mini-option::before {
   content: "○";
@@ -329,43 +393,65 @@ button:active {
   transform: translateY(-50%);
 
   font-size: 25px;
+
   font-weight: 400;
 
   color: #667085;
 }
 
-
-/* Hover / touch feedback */
-
 .mini-option:hover {
   border-color: #315efb;
+
   background: #f5f8ff;
+
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(49,94,251,0.12);
+
+  box-shadow:
+    0 3px 8px rgba(49,94,251,0.12);
 }
 
 
-/* Correct answer */
+/* Quick Check correct */
+
+.mini-option.correct {
+  background: #d9f7df !important;
+
+  color: #126b2f !important;
+
+  border-color: #42a85f !important;
+}
 
 .mini-option.correct::before {
   content: "✓";
+
   font-weight: 800;
+
   color: #126b2f;
 }
 
 
-/* Wrong answer */
+/* Quick Check wrong */
+
+.mini-option.wrong {
+  background: #ffe0e0 !important;
+
+  color: #9b1c1c !important;
+
+  border-color: #e26b6b !important;
+}
 
 .mini-option.wrong::before {
   content: "✕";
+
   font-weight: 800;
+
   color: #9b1c1c;
 }
 
 
-/* =========================
+/* =====================================================
    QUICK CHECK FEEDBACK
-   ========================= */
+===================================================== */
 
 .mini-feedback {
   margin-top: 16px;
@@ -384,38 +470,166 @@ button:active {
 }
 
 
-/* =========================
-   LESSON CONTINUE BUTTON
-   ========================= */
+/* =====================================================
+   LESSON NAVIGATION
+===================================================== */
 
-/* Normal lessons:
-   Continue is fully visible */
+.lesson-navigation {
+  display: flex;
 
-#lessonContinueButton {
-  opacity: 1;
-  cursor: pointer;
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.lesson-navigation button {
+  margin-top: 0;
+}
+
+.back-button {
+  flex: 0 0 32%;
+
+  background: #eef1f6;
+
+  color: #172033;
+
+  border: 1px solid #d8dee8;
+}
+
+.back-button:hover {
+  background: #e2e7ef;
+}
+
+.continue-button {
+  flex: 1;
 }
 
 
-/* Lessons with unanswered Quick Check */
+/* disabled Continue */
 
-#lessonContinueButton:disabled {
+.continue-button:disabled {
   opacity: 0.45;
+
   cursor: not-allowed;
 }
 
 
-/* After Quick Check is answered */
+/* enabled Continue */
 
-#lessonContinueButton.ready {
+.continue-button.ready {
   opacity: 1;
+
   cursor: pointer;
 }
 
 
-/* =========================
-   MOBILE TOUCH IMPROVEMENT
-   ========================= */
+/* =====================================================
+   MAIN QUIZ OPTIONS
+===================================================== */
+
+.option {
+  position: relative;
+
+  width: 100%;
+
+  background: #f8fafc;
+
+  color: #172033;
+
+  text-align: left;
+
+  border: 2px solid #cbd5e1;
+
+  border-radius: 14px;
+
+  padding: 15px 16px 15px 50px;
+
+  margin-top: 12px;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.option::before {
+  content: "○";
+
+  position: absolute;
+
+  left: 17px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 25px;
+
+  color: #667085;
+}
+
+.option:hover {
+  background: #f5f8ff;
+
+  border-color: #315efb;
+}
+
+
+/* Main quiz correct */
+
+.option.correct {
+  background: #d9f7df !important;
+
+  color: #126b2f !important;
+
+  border-color: #42a85f !important;
+}
+
+.option.correct::before {
+  content: "✓";
+
+  color: #126b2f;
+
+  font-weight: 800;
+}
+
+
+/* Main quiz wrong */
+
+.option.wrong {
+  background: #ffe0e0 !important;
+
+  color: #9b1c1c !important;
+
+  border-color: #e26b6b !important;
+}
+
+.option.wrong::before {
+  content: "✕";
+
+  color: #9b1c1c;
+
+  font-weight: 800;
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+.score {
+  font-size: 42px;
+
+  font-weight: 800;
+
+  text-align: center;
+
+  margin: 20px 0;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media (max-width: 480px) {
 
@@ -439,31 +653,53 @@ button:active {
     font-size: 18px;
   }
 
-  .mini-option {
+  .mini-option,
+  .option {
     min-height: 54px;
+
     font-size: 17px;
   }
 
+  .lesson-navigation {
+    gap: 8px;
+  }
+
+  .back-button {
+    flex: 0 0 30%;
+  }
+
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="app">
 
 <header>
-  <div class="logo">📚 LearnTense</div>
+
+  <div class="logo">
+    📚 LearnTense
+  </div>
+
   <div class="subtitle">
     Learn English Tenses by practicing
   </div>
+
 </header>
 
-<!-- HOME -->
+
+<!-- ===================================================
+     HOME
+=================================================== -->
 
 <section id="home" class="card">
 
-  <h2>Simple Present</h2>
+  <h2>
+    Simple Present
+  </h2>
 
   <p>
     Learn how to talk about habits, routines,
@@ -471,24 +707,29 @@ button:active {
   </p>
 
   <button onclick="startQuiz()">
-    Start Learning
+    🚀 Start Learning
   </button>
 
 </section>
 
 
-<!-- QUIZ -->
+<!-- ===================================================
+     QUIZ / LESSON AREA
+=================================================== -->
 
 <section id="quiz" class="card hidden">
 
-  <div id="progress" class="progress"></div>
+  <div id="progress"
+       class="progress">
+  </div>
 
   <h2 id="question"></h2>
 
   <div id="options"></div>
 
   <div id="explanation"
-       class="explanation hidden"></div>
+       class="explanation hidden">
+  </div>
 
   <button id="nextButton"
           class="hidden"
@@ -499,11 +740,15 @@ button:active {
 </section>
 
 
-<!-- RESULT -->
+<!-- ===================================================
+     RESULT
+=================================================== -->
 
 <section id="result" class="card hidden">
 
-  <h2>🎉 Quiz Complete!</h2>
+  <h2>
+    🎉 Quiz Complete!
+  </h2>
 
   <div id="score"
        class="score">
@@ -514,11 +759,10 @@ button:active {
   </p>
 
   <button onclick="restartQuiz()">
-    Try Again
+    🔄 Try Again
   </button>
 
 </section>
-
 
 </div>
 
@@ -526,6 +770,10 @@ button:active {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
 "https://fvrwhvfgrzmlzxmgiiuk.supabase.co";
@@ -540,79 +788,130 @@ supabase.createClient(
 );
 
 
-// ---------------------------
-// APP STATE
-// ---------------------------
+/* =====================================================
+   APP STATE
+===================================================== */
 
 let questions = [];
+
 let currentQuestion = 0;
+
 let score = 0;
+
 let answered = false;
+
 let currentUser = null;
+
 let lessons = [];
+
 let currentLesson = 0;
 
 
-// ---------------------------
-// START QUIZ
-// ---------------------------
+/* =====================================================
+   USER SESSION
+===================================================== */
 
 async function ensureUser() {
 
-  const { data: sessionData } =
+  const {
+    data: sessionData
+  } =
     await supabaseClient.auth.getSession();
 
+
   if (sessionData.session) {
-    currentUser = sessionData.session.user;
+
+    currentUser =
+      sessionData.session.user;
+
     return true;
   }
 
-  const { data, error } =
-    await supabaseClient.auth.signInAnonymously();
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth
+      .signInAnonymously();
+
 
   if (error) {
-    console.error("Anonymous login error:", error);
+
+    console.error(
+      "Anonymous login error:",
+      error
+    );
+
     return false;
   }
 
-  currentUser = data.user;
+
+  currentUser =
+    data.user;
 
   return true;
 }
 
 
+/* =====================================================
+   START LEARNING
+===================================================== */
+
 async function startQuiz() {
 
-  const loggedIn = await ensureUser();
+  const loggedIn =
+    await ensureUser();
+
 
   if (!loggedIn) {
-    alert("Unable to start learner session.");
+
+    alert(
+      "Unable to start learner session."
+    );
+
     return;
   }
+
 
   document.getElementById("home")
     .classList.add("hidden");
 
+
+  document.getElementById("result")
+    .classList.add("hidden");
+
+
   document.getElementById("quiz")
     .classList.remove("hidden");
 
-  document.getElementById("quiz").innerHTML = `
-    <div class="loading">
-      Loading lesson...
-    </div>
-  `;
+
+  document.getElementById("quiz")
+    .innerHTML = `
+
+      <div class="loading">
+
+        📚 Loading lesson...
+
+      </div>
+
+    `;
+
 
   await loadLesson();
 }
 
 
-// ---------------------------
-// LOAD QUESTIONS FROM SUPABASE
-// ---------------------------
+/* =====================================================
+   LOAD LESSONS
+===================================================== */
 
 async function loadLesson() {
 
-  const { data, error } =
+  const {
+    data,
+    error
+  } =
     await supabaseClient
       .from("tense_lessons")
       .select("*")
@@ -620,86 +919,149 @@ async function loadLesson() {
       .eq("active", true)
       .order("sort_order");
 
+
   if (error) {
 
     console.error(error);
 
-    document.getElementById("quiz").innerHTML = `
-      <div class="error">
-        Unable to load lesson.<br><br>
-        ${error.message}
-      </div>
-    `;
+
+    document.getElementById("quiz")
+      .innerHTML = `
+
+        <div class="error">
+
+          Unable to load lesson.
+
+          <br><br>
+
+          ${escapeHTML(
+            error.message
+          )}
+
+        </div>
+
+      `;
 
     return;
   }
+
 
   if (!data || data.length === 0) {
 
     await loadQuestions();
-    return;
 
+    return;
   }
 
+
   lessons = data;
+
   currentLesson = 0;
 
   showLesson();
 }
 
+
+/* =====================================================
+   SHOW LESSON
+===================================================== */
+
 function showLesson() {
 
-  const lesson = lessons[currentLesson];
+  const lesson =
+    lessons[currentLesson];
+
+
+  /* ---------------------------------------------
+     EXAMPLES
+  --------------------------------------------- */
 
   const examples =
     Array.isArray(lesson.examples)
       ? lesson.examples
       : [];
 
+
   let examplesHTML = "";
+
 
   examples.forEach(example => {
 
     const isWrong =
-      example.label.includes("❌");
+      String(
+        example.label || ""
+      ).includes("❌");
+
 
     examplesHTML += `
-      <div class="example-card ${isWrong ? "wrong-example" : ""}">
+
+      <div class="example-card
+                  ${isWrong
+                    ? "wrong-example"
+                    : ""}">
 
         <div class="example-label">
-          ${escapeHTML(example.label)}
+
+          ${escapeHTML(
+            example.label || ""
+          )}
+
         </div>
 
         <div class="example-text">
-          ${escapeHTML(example.text)}
+
+          ${escapeHTML(
+            example.text || ""
+          )}
+
         </div>
 
       </div>
+
     `;
+
   });
 
 
-  /*
-   * QUICK CHECK
-   */
+  /* ---------------------------------------------
+     QUICK CHECK
+  --------------------------------------------- */
+
+  const hasQuickCheck =
+    Boolean(
+      lesson.check_question
+    );
+
 
   let quickCheckHTML = "";
 
-  if (lesson.check_question) {
+
+  if (hasQuickCheck) {
 
     quickCheckHTML = `
 
       <div class="mini-check">
 
         <div class="mini-check-title">
+
           🧩 Quick Check
+
         </div>
+
 
         <div class="mini-question">
-          ${formatLessonContent(lesson.check_question)}
+
+          ${formatInlineText(
+            lesson.check_question
+          )}
+
         </div>
 
-        <div id="mini-options"></div>
+
+        <div id="mini-options">
+
+        </div>
+
 
         <div
           id="mini-feedback"
@@ -712,158 +1074,283 @@ function showLesson() {
   }
 
 
-  /*
-   * CONTINUE BUTTON
-   */
+  /* ---------------------------------------------
+     NAVIGATION
+  --------------------------------------------- */
 
-  const hasQuickCheck =
-    !!lesson.check_question;
+  const isFirstLesson =
+    currentLesson === 0;
+
+
+  const isLastLesson =
+    currentLesson ===
+    lessons.length - 1;
+
 
   const buttonText =
-    currentLesson < lessons.length - 1
-      ? "Continue →"
-      : "🚀 Start Practice";
+    isLastLesson
+      ? "🚀 Start Practice"
+      : "Continue →";
 
 
-  document.getElementById("quiz").innerHTML = `
+  const buttonAction =
+    isLastLesson
+      ? "startPractice()"
+      : "nextLesson()";
 
-    <div class="lesson-header">
 
-      <div class="lesson-emoji">
-        ${escapeHTML(lesson.emoji || "📚")}
-      </div>
+  /* ---------------------------------------------
+     LESSON HTML
+  --------------------------------------------- */
 
-      <div class="progress">
-        Lesson ${currentLesson + 1}
-        of ${lessons.length}
-      </div>
+  document.getElementById("quiz")
+    .innerHTML = `
 
-      <div class="progress-bar">
+      <div class="lesson-header">
 
-        <div
-          class="progress-fill"
-          style="width:${
-            ((currentLesson + 1) /
-            lessons.length) * 100
-          }%">
+        <div class="lesson-emoji">
+
+          ${escapeHTML(
+            lesson.emoji || "📚"
+          )}
+
         </div>
 
-      </div>
 
-    </div>
+        <div class="progress">
 
+          📖 Lesson
+          ${currentLesson + 1}
+          of
+          ${lessons.length}
 
-    <h2 class="lesson-title">
-      ${escapeHTML(lesson.title)}
-    </h2>
-
-
-    <div class="lesson-content">
-      ${formatLessonContent(lesson.content)}
-    </div>
+        </div>
 
 
-    ${
-      lesson.key_rule
-      ? `
-        <div class="rule-card">
+        <div class="progress-bar">
 
-          <div class="rule-title">
-            ⭐ Remember
-          </div>
-
-          <div class="rule-text">
-            ${escapeHTML(lesson.key_rule)}
+          <div
+            class="progress-fill"
+            style="width:${
+              ((currentLesson + 1) /
+              lessons.length) * 100
+            }%">
           </div>
 
         </div>
-      `
-      : ""
-    }
+
+      </div>
 
 
-    ${
-      examplesHTML
+      <h2 class="lesson-title">
+
+        ${escapeHTML(
+          lesson.title || ""
+        )}
+
+      </h2>
+
+
+      <div class="lesson-content">
+
+        ${formatLessonContent(
+          lesson.content
+        )}
+
+      </div>
+
+
+      ${
+        lesson.key_rule
         ? `
-          <div class="examples">
-            ${examplesHTML}
+
+          <div class="rule-card">
+
+            <div class="rule-title">
+
+              ⭐ Remember
+
+            </div>
+
+            <div class="rule-text">
+
+              ${formatLessonContent(
+                lesson.key_rule
+              )}
+
+            </div>
+
           </div>
+
         `
         : ""
-    }
-
-
-    ${quickCheckHTML}
-
-
-    <button
-      id="lessonContinueButton"
-      ${hasQuickCheck ? "disabled" : ""}
-      onclick="${
-        currentLesson < lessons.length - 1
-          ? "nextLesson()"
-          : "startPractice()"
-      }">
-
-      ${buttonText}
-
-    </button>
-
-  `;
-
-
-  /*
-   * CREATE QUICK CHECK OPTIONS
-   */
-
-  if (lesson.check_question) {
-
-    const miniOptions =
-      document.getElementById("mini-options");
-
-    let options = [];
-
-    if (Array.isArray(lesson.check_options)) {
-
-      options = lesson.check_options;
-
-    } else {
-
-      try {
-
-        options =
-          JSON.parse(lesson.check_options);
-
-      } catch (error) {
-
-        console.error(
-          "Quick check options error:",
-          error
-        );
-
       }
-    }
 
 
-    options.forEach((option, index) => {
+      ${
+        examplesHTML
+          ? `
 
-      const button =
-        document.createElement("button");
+            <div class="examples">
 
-      button.className = "option mini-option";
+              ${examplesHTML}
 
-      button.textContent = option;
+            </div>
 
-      button.onclick = () =>
-        answerMiniCheck(index, button);
+          `
+          : ""
+      }
 
-      miniOptions.appendChild(button);
 
-    });
+      ${quickCheckHTML}
+
+
+      <div class="lesson-navigation">
+
+        ${
+          !isFirstLesson
+          ? `
+
+            <button
+              class="back-button"
+              onclick="previousLesson()">
+
+              ← Back
+
+            </button>
+
+          `
+          : ""
+        }
+
+
+        <button
+          id="lessonContinueButton"
+          class="continue-button"
+          ${hasQuickCheck
+            ? "disabled"
+            : ""}
+          onclick="${buttonAction}">
+
+          ${buttonText}
+
+        </button>
+
+      </div>
+
+    `;
+
+
+  /* ---------------------------------------------
+     QUICK CHECK OPTIONS
+  --------------------------------------------- */
+
+  if (hasQuickCheck) {
+
+    createQuickCheckOptions(
+      lesson
+    );
 
   }
 
 }
+
+
+/* =====================================================
+   CREATE QUICK CHECK OPTIONS
+===================================================== */
+
+function createQuickCheckOptions(
+  lesson
+) {
+
+  const container =
+    document.getElementById(
+      "mini-options"
+    );
+
+
+  if (!container) return;
+
+
+  let options = [];
+
+
+  if (
+    Array.isArray(
+      lesson.check_options
+    )
+  ) {
+
+    options =
+      lesson.check_options;
+
+  }
+
+  else {
+
+    try {
+
+      options =
+        JSON.parse(
+          lesson.check_options
+        );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Quick check options error:",
+        error
+      );
+
+      return;
+    }
+
+  }
+
+
+  options.forEach(
+    (option, index) => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "mini-option";
+
+
+      button.textContent =
+        option;
+
+
+      button.onclick = () => {
+
+        answerMiniCheck(
+          index,
+          button
+        );
+
+      };
+
+
+      container.appendChild(
+        button
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   QUICK CHECK ANSWER
+===================================================== */
 
 function answerMiniCheck(
   selectedIndex,
@@ -880,9 +1367,7 @@ function answerMiniCheck(
     );
 
 
-  /*
-   * Prevent multiple answers
-   */
+  /* Prevent second answer */
 
   buttons.forEach(button => {
 
@@ -903,73 +1388,100 @@ function answerMiniCheck(
     );
 
 
-  /*
-   * CORRECT
-   */
-
-  if (
+  const isCorrect =
     selectedIndex ===
-    lesson.check_correct_index
-  ) {
+    Number(
+      lesson.check_correct_index
+    );
+
+
+  /* ---------------------------------------------
+     CORRECT
+  --------------------------------------------- */
+
+  if (isCorrect) {
 
     selectedButton
-      .classList.add("correct");
+      .classList.add(
+        "correct"
+      );
+
 
     feedback.innerHTML = `
+
       🎉 <strong>Correct!</strong>
+
       <br><br>
+
       ${escapeHTML(
-        lesson.check_explanation
+        lesson.check_explanation ||
+        "Great job!"
       )}
+
     `;
 
   }
 
 
-  /*
-   * WRONG
-   */
+  /* ---------------------------------------------
+     WRONG
+  --------------------------------------------- */
 
   else {
 
     selectedButton
-      .classList.add("wrong");
+      .classList.add(
+        "wrong"
+      );
 
 
-    if (
+    const correctButton =
       buttons[
-        lesson.check_correct_index
-      ]
-    ) {
+        Number(
+          lesson.check_correct_index
+        )
+      ];
 
-      buttons[
-        lesson.check_correct_index
-      ].classList.add("correct");
+
+    if (correctButton) {
+
+      correctButton
+        .classList.add(
+          "correct"
+        );
 
     }
 
 
     feedback.innerHTML = `
+
       💡 <strong>Let's learn this!</strong>
+
       <br><br>
+
       ${escapeHTML(
-        lesson.check_explanation
+        lesson.check_explanation ||
+        "Review the rule and try again."
       )}
+
     `;
 
   }
 
 
-  feedback.classList.remove("hidden");
+  feedback.classList.remove(
+    "hidden"
+  );
 
 
-  /*
-   * NOW ALLOW CONTINUE
-   */
+  /* ---------------------------------------------
+     ENABLE CONTINUE
+  --------------------------------------------- */
 
   if (continueButton) {
 
-    continueButton.disabled = false;
+    continueButton.disabled =
+      false;
 
     continueButton.classList.add(
       "ready"
@@ -980,359 +1492,860 @@ function answerMiniCheck(
 }
 
 
+/* =====================================================
+   NEXT LESSON
+===================================================== */
+
 function nextLesson() {
 
-  currentLesson++;
-
-  if (currentLesson >= lessons.length) {
+  if (
+    currentLesson >=
+    lessons.length - 1
+  ) {
 
     startPractice();
 
     return;
   }
 
+
+  currentLesson++;
+
   showLesson();
 }
 
+
+/* =====================================================
+   PREVIOUS LESSON
+===================================================== */
+
+function previousLesson() {
+
+  if (
+    currentLesson <= 0
+  ) {
+
+    return;
+  }
+
+
+  currentLesson--;
+
+  showLesson();
+}
+
+
+/* =====================================================
+   START PRACTICE
+===================================================== */
+
 async function startPractice() {
 
-  document.getElementById("quiz").innerHTML = `
-    <div class="loading">
-      Preparing your practice questions...
-    </div>
-  `;
+  document.getElementById("quiz")
+    .innerHTML = `
+
+      <div class="loading">
+
+        🧠 Preparing your
+        practice questions...
+
+      </div>
+
+    `;
+
 
   await loadQuestions();
 }
 
 
+/* =====================================================
+   LOAD SMART QUESTIONS
+===================================================== */
 
 async function loadQuestions() {
 
   const SIMPLE_PRESENT_ID =
-    1; // We will verify this below
+    1;
 
-  const { data, error } =
+
+  const {
+    data,
+    error
+  } =
     await supabaseClient.rpc(
       "get_learning_questions",
       {
-        p_user_id: currentUser.id,
-        p_tense_id: SIMPLE_PRESENT_ID,
-        p_limit: 10
+        p_user_id:
+          currentUser.id,
+
+        p_tense_id:
+          SIMPLE_PRESENT_ID,
+
+        p_limit:
+          10
       }
     );
+
 
   if (error) {
 
     console.error(error);
 
-    document.getElementById("quiz").innerHTML = `
-      <div class="error">
-        Unable to load learning questions.<br><br>
-        ${error.message}
-      </div>
-    `;
+
+    document.getElementById("quiz")
+      .innerHTML = `
+
+        <div class="error">
+
+          Unable to load
+          learning questions.
+
+          <br><br>
+
+          ${escapeHTML(
+            error.message
+          )}
+
+        </div>
+
+      `;
 
     return;
   }
 
-  if (!data || data.length === 0) {
 
-    document.getElementById("quiz").innerHTML = `
-      <div class="card">
-        <h2>🎉 Amazing!</h2>
-        <p>
-          You have mastered all the available
-          Simple Present questions.
-        </p>
-      </div>
-    `;
+  if (
+    !data ||
+    data.length === 0
+  ) {
+
+    document.getElementById("quiz")
+      .innerHTML = `
+
+        <div>
+
+          <h2>
+            🎉 Amazing!
+          </h2>
+
+          <p>
+            You have mastered all the
+            available Simple Present
+            questions.
+          </p>
+
+        </div>
+
+      `;
 
     return;
   }
+
 
   questions = data;
 
   currentQuestion = 0;
+
   score = 0;
 
   showQuestion();
 }
 
 
-// ---------------------------
-// SHOW QUESTION
-// ---------------------------
+/* =====================================================
+   SHOW QUESTION
+===================================================== */
 
 function showQuestion() {
 
   answered = false;
 
-  const q = questions[currentQuestion];
+
+  const q =
+    questions[
+      currentQuestion
+    ];
+
 
   document.getElementById("quiz")
     .innerHTML = `
 
-      <div id="progress"
-           class="progress">
-        Question ${currentQuestion + 1}
-        of ${questions.length}
+      <div class="progress">
+
+        🧠 Question
+        ${currentQuestion + 1}
+        of
+        ${questions.length}
+
       </div>
+
 
       <h2 id="question">
-        ${escapeHTML(q.question)}
+
+        ${escapeHTML(
+          q.question
+        )}
+
       </h2>
 
-      <div id="options"></div>
 
-      <div id="explanation"
-           class="explanation hidden">
+      <div id="options">
+
       </div>
 
-      <button id="nextButton"
-              class="hidden"
-              onclick="nextQuestion()">
-        Next Question
+
+      <div
+        id="explanation"
+        class="explanation hidden">
+      </div>
+
+
+      <button
+        id="nextButton"
+        class="hidden"
+        onclick="nextQuestion()">
+
+        Next Question →
+
       </button>
+
     `;
 
+
   const optionsContainer =
-    document.getElementById("options");
+    document.getElementById(
+      "options"
+    );
 
-  q.options.forEach((option, index) => {
 
-    const button =
-      document.createElement("button");
+  if (
+    !Array.isArray(
+      q.options
+    )
+  ) {
 
-    button.className = "option";
+    console.error(
+      "Question options are invalid:",
+      q
+    );
 
-    button.textContent = option;
+    return;
+  }
 
-    button.onclick = () =>
-      checkAnswer(index, button);
 
-    optionsContainer.appendChild(button);
-  });
+  q.options.forEach(
+    (option, index) => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "option";
+
+
+      button.textContent =
+        option;
+
+
+      button.onclick = () => {
+
+        checkAnswer(
+          index,
+          button
+        );
+
+      };
+
+
+      optionsContainer.appendChild(
+        button
+      );
+
+    }
+  );
+
 }
 
 
-// ---------------------------
-// CHECK ANSWER
-// ---------------------------
+/* =====================================================
+   CHECK MAIN QUIZ ANSWER
+===================================================== */
 
-async function checkAnswer(selectedIndex, selectedButton) {
+async function checkAnswer(
+  selectedIndex,
+  selectedButton
+) {
 
   if (answered) return;
 
+
   answered = true;
 
-  const q = questions[currentQuestion];
+
+  const q =
+    questions[
+      currentQuestion
+    ];
+
 
   const buttons =
-    document.querySelectorAll(".option");
+    document.querySelectorAll(
+      "#options .option"
+    );
+
 
   buttons.forEach(button => {
+
     button.disabled = true;
+
   });
 
-  if (selectedIndex === q.correct_index) {
 
-  score++;
+  const correctIndex =
+    Number(
+      q.correct_index
+    );
 
-  selectedButton.classList.add("correct");
 
-  await saveProgress(q.id, true);
+  /* CORRECT */
 
-} else {
+  if (
+    selectedIndex ===
+    correctIndex
+  ) {
 
-  selectedButton.classList.add("wrong");
+    score++;
 
-  await saveProgress(q.id, false);
 
-    buttons[q.correct_index]
-      .classList.add("correct");
+    selectedButton
+      .classList.add(
+        "correct"
+      );
+
+
+    await saveProgress(
+      q.id,
+      true
+    );
+
   }
 
+
+  /* WRONG */
+
+  else {
+
+    selectedButton
+      .classList.add(
+        "wrong"
+      );
+
+
+    await saveProgress(
+      q.id,
+      false
+    );
+
+
+    if (
+      buttons[
+        correctIndex
+      ]
+    ) {
+
+      buttons[
+        correctIndex
+      ].classList.add(
+        "correct"
+      );
+
+    }
+
+  }
+
+
   const explanation =
-    document.getElementById("explanation");
+    document.getElementById(
+      "explanation"
+    );
+
 
   explanation.textContent =
-    "💡 " + q.explanation;
+    "💡 " +
+    (
+      q.explanation ||
+      "Review the rule."
+    );
 
-  explanation.classList.remove("hidden");
 
-  document.getElementById("nextButton")
-    .classList.remove("hidden");
+  explanation.classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "nextButton"
+  ).classList.remove(
+    "hidden"
+  );
+
 }
 
 
-async function saveProgress(questionId, isCorrect) {
+/* =====================================================
+   SAVE PROGRESS
+===================================================== */
+
+async function saveProgress(
+  questionId,
+  isCorrect
+) {
 
   if (!currentUser) return;
 
-  const { data: existing, error: fetchError } =
+
+  const {
+    data: existing,
+    error: fetchError
+  } =
     await supabaseClient
-      .from("user_question_progress")
+      .from(
+        "user_question_progress"
+      )
       .select("*")
-      .eq("user_id", currentUser.id)
-      .eq("question_id", questionId)
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .eq(
+        "question_id",
+        questionId
+      )
       .maybeSingle();
 
+
   if (fetchError) {
-    console.error("Progress fetch error:", fetchError);
+
+    console.error(
+      "Progress fetch error:",
+      fetchError
+    );
+
     return;
   }
+
+
+  /* ---------------------------------------------
+     FIRST ATTEMPT
+  --------------------------------------------- */
 
   if (!existing) {
 
-    const { error } =
+    const {
+      error
+    } =
       await supabaseClient
-        .from("user_question_progress")
+        .from(
+          "user_question_progress"
+        )
         .insert({
-          user_id: currentUser.id,
-          question_id: questionId,
-          attempts: 1,
-          mistakes: isCorrect ? 0 : 1,
-          consecutive_correct: isCorrect ? 1 : 0,
-          mastered: false,
-          last_attempt: new Date().toISOString()
+
+          user_id:
+            currentUser.id,
+
+          question_id:
+            questionId,
+
+          attempts:
+            1,
+
+          mistakes:
+            isCorrect
+              ? 0
+              : 1,
+
+          consecutive_correct:
+            isCorrect
+              ? 1
+              : 0,
+
+          mastered:
+            false,
+
+          last_attempt:
+            new Date()
+              .toISOString()
+
         });
 
+
     if (error) {
-      console.error("Progress insert error:", error);
+
+      console.error(
+        "Progress insert error:",
+        error
+      );
+
     }
+
 
     return;
   }
+
+
+  /* ---------------------------------------------
+     UPDATE PROGRESS
+  --------------------------------------------- */
 
   const newAttempts =
     existing.attempts + 1;
 
+
   const newMistakes =
-    existing.mistakes + (isCorrect ? 0 : 1);
+    existing.mistakes +
+    (
+      isCorrect
+        ? 0
+        : 1
+    );
+
 
   const newConsecutive =
     isCorrect
+
       ? existing.consecutive_correct + 1
+
       : 0;
+
 
   const mastered =
     newConsecutive >= 5;
 
-  const { error } =
+
+  const {
+    error
+  } =
     await supabaseClient
-      .from("user_question_progress")
+      .from(
+        "user_question_progress"
+      )
       .update({
-        attempts: newAttempts,
-        mistakes: newMistakes,
-        consecutive_correct: newConsecutive,
-        mastered: mastered,
-        last_attempt: new Date().toISOString()
+
+        attempts:
+          newAttempts,
+
+        mistakes:
+          newMistakes,
+
+        consecutive_correct:
+          newConsecutive,
+
+        mastered:
+          mastered,
+
+        last_attempt:
+          new Date()
+            .toISOString()
+
       })
-      .eq("id", existing.id);
+      .eq(
+        "id",
+        existing.id
+      );
+
 
   if (error) {
-    console.error("Progress update error:", error);
+
+    console.error(
+      "Progress update error:",
+      error
+    );
+
   }
+
 }
 
-// ---------------------------
-// NEXT QUESTION
-// ---------------------------
+
+/* =====================================================
+   NEXT QUESTION
+===================================================== */
 
 function nextQuestion() {
 
   currentQuestion++;
 
-  if (currentQuestion >= questions.length) {
+
+  if (
+    currentQuestion >=
+    questions.length
+  ) {
 
     showResult();
 
-  } else {
-
-    showQuestion();
+    return;
   }
+
+
+  showQuestion();
 }
 
 
-// ---------------------------
-// RESULT
-// ---------------------------
+/* =====================================================
+   RESULT
+===================================================== */
 
 function showResult() {
 
   document.getElementById("quiz")
-    .classList.add("hidden");
-
-  document.getElementById("result")
-    .classList.remove("hidden");
-
-  const percentage =
-    Math.round(
-      (score / questions.length) * 100
+    .classList.add(
+      "hidden"
     );
 
-  document.getElementById("score")
-    .textContent =
-    `${score}/${questions.length} (${percentage}%)`;
+
+  document.getElementById("result")
+    .classList.remove(
+      "hidden"
+    );
+
+
+  const percentage =
+    questions.length
+      ? Math.round(
+          (
+            score /
+            questions.length
+          ) * 100
+        )
+      : 0;
+
+
+  document.getElementById(
+    "score"
+  ).textContent =
+
+    `${score}/${questions.length}
+     (${percentage}%)`;
+
 
   let message;
 
+
   if (percentage >= 90) {
+
     message =
-      "Excellent! You have a strong understanding of the Simple Present.";
-  }
-  else if (percentage >= 70) {
-    message =
-      "Good job! A little more practice will make you stronger.";
-  }
-  else if (percentage >= 50) {
-    message =
-      "You're getting there. Let's practice the difficult questions again.";
-  }
-  else {
-    message =
-      "Let's learn the rules and practice again.";
+      "🌟 Excellent! You have a strong understanding of the Simple Present.";
+
   }
 
-  document.getElementById("resultMessage")
-    .textContent = message;
+  else if (percentage >= 70) {
+
+    message =
+      "👍 Good job! A little more practice will make you stronger.";
+
+  }
+
+  else if (percentage >= 50) {
+
+    message =
+      "💪 You're getting there. Let's practice the difficult questions again.";
+
+  }
+
+  else {
+
+    message =
+      "📚 Let's review the rules and practice again.";
+
+  }
+
+
+  document.getElementById(
+    "resultMessage"
+  ).textContent =
+    message;
 }
 
 
-// ---------------------------
-// RESTART
-// ---------------------------
+/* =====================================================
+   RESTART
+===================================================== */
 
 function restartQuiz() {
 
-  document.getElementById("result")
-    .classList.add("hidden");
+  document.getElementById(
+    "result"
+  ).classList.add(
+    "hidden"
+  );
 
-  document.getElementById("home")
-    .classList.remove("hidden");
+
+  document.getElementById(
+    "quiz"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "home"
+  ).classList.remove(
+    "hidden"
+  );
 
 }
 
 
-// ---------------------------
-// SECURITY / DISPLAY HELPER
-// ---------------------------
+/* =====================================================
+   LESSON CONTENT FORMATTER
+===================================================== */
 
-function formatLessonContent(text) {
+/*
+   Handles BOTH:
+
+   1. Real newline:
+      Habit: I brush...
+
+      Routine: She goes...
+
+   2. Literal "\n":
+      Habit: I brush...\nRoutine: She goes...
+
+   Each line becomes a visual bullet.
+*/
+
+function formatLessonContent(
+  text
+) {
+
+  if (!text) {
+    return "";
+  }
+
+
+  let cleanText =
+    String(text);
+
+
+  /*
+     Convert literal \n
+     into real newlines.
+  */
+
+  cleanText =
+    cleanText.replace(
+      /\\n/g,
+      "\n"
+    );
+
+
+  /*
+     Split into lines.
+  */
+
+  const lines =
+    cleanText
+      .split(/\r?\n/)
+      .map(
+        line => line.trim()
+      )
+      .filter(
+        line => line.length > 0
+      );
+
+
+  /*
+     If there is only one line,
+     display normally.
+  */
+
+  if (lines.length <= 1) {
+
+    return `
+      <div class="lesson-point">
+
+        ${escapeHTML(
+          lines[0] || ""
+        )}
+
+      </div>
+    `;
+
+  }
+
+
+  /*
+     Multiple lines become
+     separate bullet cards.
+  */
+
+  return lines
+    .map(line => `
+
+      <div class="lesson-point">
+
+        ${escapeHTML(line)}
+
+      </div>
+
+    `)
+    .join("");
+
+}
+
+
+/* =====================================================
+   INLINE TEXT
+===================================================== */
+
+/*
+   Used for Quick Check questions
+   where we don't want every sentence
+   turned into a separate bullet.
+*/
+
+function formatInlineText(
+  text
+) {
+
   if (!text) return "";
 
-  return escapeHTML(text)
-    .replace(/\\n/g, "<br><br>")
-    .replace(/\n/g, "<br><br>");
+
+  return escapeHTML(
+    String(text)
+      .replace(
+        /\\n/g,
+        "\n"
+      )
+  ).replace(
+    /\n/g,
+    "<br>"
+  );
+
 }
 
-function escapeHTML(text) {
+
+/* =====================================================
+   HTML SECURITY
+===================================================== */
+
+function escapeHTML(
+  text
+) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
-  div.textContent = text;
+
+  div.textContent =
+    text == null
+      ? ""
+      : String(text);
+
 
   return div.innerHTML;
 }
