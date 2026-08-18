@@ -127,6 +127,84 @@ button:active {
   padding: 15px;
   border-radius: 10px;
 }
+
+.lesson-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.lesson-emoji {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #315efb;
+  border-radius: 20px;
+  transition: width .3s ease;
+}
+
+.lesson-title {
+  font-size: 27px;
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
+
+.lesson-content {
+  font-size: 17px;
+  line-height: 1.8;
+  white-space: pre-line;
+  margin-bottom: 20px;
+}
+
+.rule-card {
+  background: #fff7d6;
+  border-radius: 16px;
+  padding: 18px;
+  margin: 20px 0;
+}
+
+.rule-title {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.rule-text {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.example-card {
+  background: #f7f9fc;
+  border-radius: 14px;
+  padding: 15px;
+  margin: 12px 0;
+}
+
+.example-label {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.example-text {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.wrong-example {
+  background: #fff0f0;
+}
 </style>
 </head>
 
@@ -333,25 +411,96 @@ function showLesson() {
 
   const lesson = lessons[currentLesson];
 
+  const examples =
+    Array.isArray(lesson.examples)
+      ? lesson.examples
+      : [];
+
+  let examplesHTML = "";
+
+  examples.forEach(example => {
+
+    const isWrong =
+      example.label.includes("❌");
+
+    examplesHTML += `
+      <div class="example-card ${isWrong ? "wrong-example" : ""}">
+        <div class="example-label">
+          ${escapeHTML(example.label)}
+        </div>
+
+        <div class="example-text">
+          ${escapeHTML(example.text)}
+        </div>
+      </div>
+    `;
+  });
+
   document.getElementById("quiz").innerHTML = `
 
-    <div class="progress">
-      Lesson ${currentLesson + 1} of ${lessons.length}
+    <div class="lesson-header">
+
+      <div class="lesson-emoji">
+        ${escapeHTML(lesson.emoji || "📚")}
+      </div>
+
+      <div class="progress">
+        Lesson ${currentLesson + 1}
+        of ${lessons.length}
+      </div>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          style="width:${
+            ((currentLesson + 1) /
+            lessons.length) * 100
+          }%">
+        </div>
+      </div>
+
     </div>
 
-    <h2>${escapeHTML(lesson.title)}</h2>
+    <h2 class="lesson-title">
+      ${escapeHTML(lesson.title)}
+    </h2>
 
-    <div class="explanation"
-         style="white-space: pre-line;">
+    <div class="lesson-content">
       ${escapeHTML(lesson.content)}
     </div>
+
+    ${
+      lesson.key_rule
+      ? `
+        <div class="rule-card">
+          <div class="rule-title">
+            ⭐ Remember
+          </div>
+
+          <div class="rule-text">
+            ${escapeHTML(lesson.key_rule)}
+          </div>
+        </div>
+      `
+      : ""
+    }
+
+    ${
+      examplesHTML
+        ? `
+          <div class="examples">
+            ${examplesHTML}
+          </div>
+        `
+        : ""
+    }
 
     ${
       currentLesson < lessons.length - 1
 
       ? `
         <button onclick="nextLesson()">
-          Next
+          Continue →
         </button>
       `
 
