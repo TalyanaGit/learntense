@@ -239,6 +239,30 @@ let currentLesson = 0;
 // START QUIZ
 // ---------------------------
 
+async function ensureUser() {
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionData.session) {
+    currentUser = sessionData.session.user;
+    return true;
+  }
+
+  const { data, error } =
+    await supabaseClient.auth.signInAnonymously();
+
+  if (error) {
+    console.error("Anonymous login error:", error);
+    return false;
+  }
+
+  currentUser = data.user;
+
+  return true;
+}
+
+
 async function startQuiz() {
 
   const loggedIn = await ensureUser();
