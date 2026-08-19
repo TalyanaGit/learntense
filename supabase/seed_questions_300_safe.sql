@@ -1,167 +1,81 @@
--- LearnTense: type-safe 300-question seed
--- Use this script instead of the legacy simple_present_300.sql.
--- It never uses INSERT INTO public.questions VALUES (...).
--- 6 games x 50 questions = 300 questions.
+-- LearnTense Simple Present: clean 250-question seed
+-- 10 games x 25 questions. Each game has 5 questions from each of 5 skills:
+-- fill-in-the-blank, multiple choice, correction, question formation, negatives.
+-- Explicit column names are used throughout.
 
 alter table public.questions add column if not exists game_number integer;
+alter table public.questions add column if not exists skill_number integer;
+
+-- Keep old Simple Present seed rows out of the active practice pool.
+update public.questions set is_active=false where tense_id=1;
 
 DO $$
 declare
+  g integer;
   i integer;
-  game_no integer;
-  skill_no integer;
-  diff integer;
-  q text;
-  opts jsonb;
-  correct_idx integer;
-  qtype text;
-  exp text;
-  tense bigint := 1;
-  subjects text[] := array['I','You','We','They','He','She','My brother','Maria','The children','The teacher'];
-  verbs text[] := array['go','watch','study','play','read','cook','work','visit','teach','drink'];
-  s text;
-  v text;
-  sv text;
+  v integer;
+  subj text;
+  base text;
+  third text;
+  object_text text;
+  routine text;
+  singular boolean;
+  correct_text text;
+  wrong_text text;
+  question_text text;
+  options jsonb;
+  answer_idx integer;
+  explanation text;
 begin
-  -- 6 games, 10 skills, 5 questions per skill = 300 questions.
-  for i in 1..300 loop
-    game_no := ((i - 1) / 50) + 1;
-    skill_no := (((i - 1) % 50) / 5) + 1;
-    diff := case when game_no <= 2 then 1 when game_no <= 4 then 2 else 3 end;
-    s := subjects[((i - 1) % array_length(subjects,1)) + 1];
-    v := verbs[((i * 3 - 1) % array_length(verbs,1)) + 1];
+  for g in 1..10 loop
+    for i in 1..5 loop
+      v := ((g-1)*5+i-1) % 15 + 1;
+      base := (array['go','watch','study','play','wash','read','cook','teach','fix','carry','try','brush','miss','pass','do'])[v];
+      third := (array['goes','watches','studies','plays','washes','reads','cooks','teaches','fixes','carries','tries','brushes','misses','passes','does'])[v];
+      object_text := (array['to school','TV','English','football','the dishes','books','dinner','English','bicycles','a bag','new recipes','their teeth','the bus','the shop','homework'])[v];
+      subj := (array['I','You','We','They','He','She','It','Ravi','Maya','The children'])[((g+i-2)%10)+1];
+      singular := subj in ('He','She','It','Ravi','Maya');
+      correct_text := case when singular then third else base end;
+      wrong_text := case when singular then base else third end;
+      routine := (array['every day','every morning','on Sundays','after school','at night'])[((g+i-2)%5)+1];
 
-    -- Third-person singular form used by the templates below.
-    sv := case v
-      when 'go' then 'goes' when 'watch' then 'watches' when 'study' then 'studies'
-      when 'play' then 'plays' when 'read' then 'reads' when 'cook' then 'cooks'
-      when 'work' then 'works' when 'visit' then 'visits' when 'teach' then 'teaches'
-      when 'drink' then 'drinks' else v || 's' end;
+      -- Skill 1: fill in the blank
+      question_text := subj || ' ___ ' || object_text || ' ' || routine || '.';
+      options := jsonb_build_array(correct_text,wrong_text,base || 'ed',base || 'ing');
+      insert into public.questions(tense_id,question,question_text,options,correct_index,correct_option,correct_answer,explanation,difficulty,is_active,attempt_count,question_type,game_number,skill_number)
+      values(1,question_text,question_text,options,0,0,0,'Use ' || case when singular then 'the third-person -s/-es form' else 'the base form' end || ' with ' || subj || '.',case when g<=3 then 1 when g<=6 then 2 else 3 end,true,0,'multiple_choice',g,1);
 
-    if skill_no = 1 then
-      q := s || ' ___ every day.';
-      opts := jsonb_build_array(v, case when s in ('He','She','My brother','Maria','The teacher') then sv else v end);
-      correct_idx := case when s in ('He','She','My brother','Maria','The teacher') then 1 else 0 end;
-      qtype := 'fill_blank';
-      exp := 'Choose the Simple Present verb that agrees with the subject.';
+      -- Skill 2: multiple choice
+      question_text := (case when singular then subj else 'She' end) || ' ___ ' || object_text || ' ' || routine || '.';
+      correct_text := case when singular then third else third end;
+      options := jsonb_build_array(correct_text,base,base || 'ed',base || 'ing');
+      insert into public.questions(tense_id,question,question_text,options,correct_index,correct_option,correct_answer,explanation,difficulty,is_active,attempt_count,question_type,game_number,skill_number)
+      values(1,question_text,question_text,options,0,0,0,'He, she and it use the third-person -s/-es form.',case when g<=3 then 1 when g<=6 then 2 else 3 end,true,0,'multiple_choice',g,2);
 
-    elsif skill_no = 2 then
-      q := 'Choose the correct sentence about ' || lower(s) || '.';
-      opts := jsonb_build_array(
-        s || ' ' || v || ' every day.',
-        s || ' ' || case when s in ('He','She','My brother','Maria','The teacher') then sv else v end || ' every day.'
-      );
-      correct_idx := case when s in ('He','She','My brother','Maria','The teacher') then 1 else 0 end;
-      qtype := 'multiple_choice';
-      exp := 'The verb must agree with the subject in the Simple Present.';
+      -- Skill 3: correction
+      question_text := 'Choose the correct sentence.';
+      options := jsonb_build_array(subj || ' ' || wrong_text || ' ' || object_text || ' ' || routine || '.',subj || ' ' || correct_text || ' ' || object_text || ' ' || routine || '.');
+      insert into public.questions(tense_id,question,question_text,options,correct_index,correct_option,correct_answer,explanation,difficulty,is_active,attempt_count,question_type,game_number,skill_number)
+      values(1,question_text,question_text,options,1,1,1,'The correct sentence uses ' || correct_text || ' with ' || subj || '.',case when g<=3 then 1 when g<=6 then 2 else 3 end,true,0,'multiple_choice',g,3);
 
-    elsif skill_no = 3 then
-      q := 'Correct the mistake: ' || s || ' ' || case when s in ('He','She','My brother','Maria','The teacher') then v else sv end || ' every day.';
-      opts := jsonb_build_array(
-        s || ' ' || case when s in ('He','She','My brother','Maria','The teacher') then sv else v end || ' every day.',
-        s || ' ' || case when s in ('He','She','My brother','Maria','The teacher') then v else sv end || ' every day.'
-      );
-      correct_idx := 0;
-      qtype := 'correct_mistake';
-      exp := 'In the Simple Present, third-person singular subjects normally take -s or -es.';
+      -- Skill 4: question formation
+      question_text := 'Make a question from: ' || subj || ' ' || correct_text || ' ' || object_text || ' ' || routine || '.';
+      correct_text := case when singular then 'Does ' || subj || ' ' || base || ' ' || object_text || ' ' || routine || '?' else 'Do ' || subj || ' ' || base || ' ' || object_text || ' ' || routine || '?' end;
+      wrong_text := case when singular then 'Do ' || subj || ' ' || third || ' ' || object_text || '?' else 'Does ' || subj || ' ' || third || ' ' || object_text || '?' end;
+      options := jsonb_build_array(correct_text,wrong_text,subj || ' ' || third || ' ' || object_text || '?','Is ' || subj || ' ' || base || ' ' || object_text || '?');
+      insert into public.questions(tense_id,question,question_text,options,correct_index,correct_option,correct_answer,explanation,difficulty,is_active,attempt_count,question_type,game_number,skill_number)
+      values(1,question_text,question_text,options,0,0,0,'Use ' || case when singular then 'does' else 'do' end || ' and keep the main verb in its base form.',case when g<=3 then 1 when g<=6 then 2 else 3 end,true,0,'multiple_choice',g,4);
 
-    elsif skill_no = 4 then
-      q := case when s in ('He','She','My brother','Maria','The teacher') then 'Does ' || lower(s) else 'Do ' || lower(s) end || ' ' || v || ' every day?';
-      opts := jsonb_build_array(q, replace(q, ' ' || v || ' ', ' ' || sv || ' '));
-      correct_idx := 0;
-      qtype := 'question_formation';
-      exp := 'After do or does, use the base verb.';
-
-    elsif skill_no = 5 then
-      q := 'Choose the correct negative sentence.';
-      opts := jsonb_build_array(
-        case when s in ('He','She','My brother','Maria','The teacher') then s || ' does not ' || v || '.' else s || ' do not ' || v || '.' end,
-        case when s in ('He','She','My brother','Maria','The teacher') then s || ' does not ' || sv || '.' else s || ' do not ' || sv || '.' end
-      );
-      correct_idx := 0;
-      qtype := 'negative';
-      exp := 'Use do not or does not followed by the base verb.';
-
-    elsif skill_no = 6 then
-      q := 'Read the statement: ' || s || ' ' || case when s in ('He','She','My brother','Maria','The teacher') then sv else v end || ' every day. Is it grammatically correct?';
-      opts := jsonb_build_array('True','False');
-      correct_idx := 0;
-      qtype := 'true_false';
-      exp := 'Check subject-verb agreement in the Simple Present.';
-
-    elsif skill_no = 7 then
-      q := 'Match the subject ' || s || ' with the correct verb form.';
-      opts := case when s in ('He','She','My brother','Maria','The teacher')
-        then jsonb_build_array(v, sv) else jsonb_build_array(v, sv) end;
-      correct_idx := case when s in ('He','She','My brother','Maria','The teacher') then 1 else 0 end;
-      qtype := 'matching';
-      exp := 'Select the verb form that agrees with the subject.';
-
-    elsif skill_no = 8 then
-      q := 'Reorder: ' || lower(s) || ' / ' || v || ' / every day';
-      opts := jsonb_build_array(
-        s || ' ' || case when s in ('He','She','My brother','Maria','The teacher') then sv else v end || ' every day.',
-        'Every day ' || lower(s) || ' ' || v || '.'
-      );
-      correct_idx := 0;
-      qtype := 'reordering';
-      exp := 'Build a complete Simple Present sentence with correct subject-verb agreement.';
-
-    elsif skill_no = 9 then
-      q := 'Short answer: What does ' || lower(s) || ' usually do?';
-      opts := jsonb_build_array(
-        s || ' usually ' || case when s in ('He','She','My brother','Maria','The teacher') then sv else v end || '.',
-        s || ' usually ' || v || 'ed.'
-      );
-      correct_idx := 0;
-      qtype := 'short_answer';
-      exp := 'Use the Simple Present for usual or repeated actions.';
-
-    else
-      q := 'Which verb form completes this routine sentence: ' || s || ' ___ every morning?';
-      opts := jsonb_build_array(v, sv, v || 'ing', v || 'ed');
-      correct_idx := case when s in ('He','She','My brother','Maria','The teacher') then 1 else 0 end;
-      qtype := 'routine';
-      exp := 'Routines are commonly expressed with the Simple Present.';
-    end if;
-
-    insert into public.questions (
-      tense_id,
-      question,
-      options,
-      correct_index,
-      explanation,
-      difficulty,
-      is_active,
-      attempt_count,
-      correct_option,
-      question_type,
-      question_text,
-      correct_answer,
-      created_at,
-      game_number
-    ) values (
-      tense,
-      q,
-      opts,
-      correct_idx,
-      exp,
-      diff,
-      true,
-      0,
-      correct_idx,
-      qtype,
-      q,
-      correct_idx,
-      now(),
-      game_no
-    );
+      -- Skill 5: negatives
+      question_text := 'Choose the correct negative sentence.';
+      correct_text := subj || ' ' || case when singular then 'does not ' else 'do not ' end || base || ' ' || object_text || ' ' || routine || '.';
+      wrong_text := subj || ' ' || case when singular then 'do not ' else 'does not ' end || base || ' ' || object_text || ' ' || routine || '.';
+      options := jsonb_build_array(correct_text,wrong_text,'No ' || subj || ' ' || correct_text || '.','Not ' || subj || ' ' || base || ' ' || object_text || '.');
+      insert into public.questions(tense_id,question,question_text,options,correct_index,correct_option,correct_answer,explanation,difficulty,is_active,attempt_count,question_type,game_number,skill_number)
+      values(1,question_text,question_text,options,0,0,0,'Use ' || case when singular then 'does not' else 'do not' end || ' plus the base verb.',case when g<=3 then 1 when g<=6 then 2 else 3 end,true,0,'multiple_choice',g,5);
+    end loop;
   end loop;
 end $$;
 
--- Verify the generated bank.
-select game_number, count(*) as questions
-from public.questions
-where tense_id = 1 and game_number is not null
- group by game_number
- order by game_number;
+-- Verification: exactly 250 active Simple Present seed questions.
+select count(*) as active_simple_present_questions from public.questions where tense_id=1 and is_active=true;
