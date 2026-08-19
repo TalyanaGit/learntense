@@ -10,58 +10,23 @@
 <div class="app-shell">
   <section id="auth" class="auth-screen">
     <div class="auth-scene">
-      <div class="auth-branding">
-        <div class="auth-book">📖</div>
-        <h1><span>Learn</span><b>Tense</b></h1>
-        <p>Learn Grammar. <strong>Play.</strong> Master.</p>
-        <div class="auth-sparkles">✦ <span>✦</span> ✦</div>
-      </div>
-
-      <div class="auth-character" aria-hidden="true">
-        <div class="character-cloud">☁️</div>
-        <div class="student">👦🏻</div>
-        <div class="backpack">🎒</div>
-        <div class="owl">🦉</div>
-      </div>
-
-      <div class="auth-card">
-        <div class="auth-card-heading">
-          <div class="welcome-icon">📚</div>
-          <p class="eyebrow">WELCOME TO LEARNTENSE</p>
-          <h2 id="authTitle">Welcome Back!</h2>
-          <p class="muted" id="authMessage">Continue your learning adventure.</p>
-        </div>
-
-        <form id="authForm">
-          <label>Email
-            <div class="auth-input-wrap"><span>✉</span><input id="authEmail" type="email" autocomplete="email" required placeholder="Email address"></div>
-          </label>
-          <label>Password
-            <div class="auth-input-wrap"><span>🔒</span><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Password"><button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">◉</button></div>
-          </label>
-          <div class="auth-options"><label class="remember"><input type="checkbox" id="rememberMe" checked> <span>Remember me</span></label><button type="button" class="auth-link" id="forgotPasswordBtn">Forgot password?</button></div>
-          <button class="primary auth-submit" id="authSubmit" type="submit">Sign In</button>
-        </form>
-
-        <div class="auth-divider"><span>or</span></div>
-        <button class="google-btn" id="googleBtn" type="button"><span class="google-g">G</span> Continue with Google</button>
-        <button class="text-btn auth-create" id="authToggle" type="button">New here? <strong>Create an account</strong></button>
-        <button class="guest-link" id="guestBtn" type="button">Continue as guest</button>
-      </div>
-
-      <div class="auth-benefits">
-        <div><span>🧠</span><strong>Learn</strong><small>Simple rules made easy</small></div>
-        <div><span>🎮</span><strong>Play</strong><small>Fun quizzes & challenges</small></div>
-        <div><span>🏆</span><strong>Practice</strong><small>Improve every day</small></div>
-        <div><span>📈</span><strong>Track</strong><small>See your progress</small></div>
-      </div>
+      <div class="auth-branding"><div class="auth-book">📖</div><h1><span>Learn</span><b>Tense</b></h1><p>Learn Grammar. <strong>Play.</strong> Master.</p><div class="auth-sparkles">✦ <span>✦</span> ✦</div></div>
+      <div class="auth-character" aria-hidden="true"><div class="character-cloud">☁️</div><div class="student">👦🏻</div><div class="backpack">🎒</div><div class="owl">🦉</div></div>
+      <div class="auth-card"><div class="auth-card-heading"><div class="welcome-icon">📚</div><p class="eyebrow">WELCOME TO LEARNTENSE</p><h2 id="authTitle">Welcome Back!</h2><p class="muted" id="authMessage">Continue your learning adventure.</p></div><form id="authForm"><label>Email<div class="auth-input-wrap"><span>✉</span><input id="authEmail" type="email" autocomplete="email" required placeholder="Email address"></div></label><label>Password<div class="auth-input-wrap"><span>🔒</span><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Password"><button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">◉</button></div></label><div class="auth-options"><label class="remember"><input type="checkbox" id="rememberMe" checked> <span>Remember me</span></label><button type="button" class="auth-link" id="forgotPasswordBtn">Forgot password?</button></div><button class="primary auth-submit" id="authSubmit" type="submit">Sign In</button></form><div class="auth-divider"><span>or</span></div><button class="google-btn" id="googleBtn" type="button"><span class="google-g">G</span> Continue with Google</button><button class="text-btn auth-create" id="authToggle" type="button">New here? <strong>Create an account</strong></button><button class="guest-link" id="guestBtn" type="button">Continue as guest</button></div>
+      <div class="auth-benefits"><div><span>🧠</span><strong>Learn</strong><small>Simple rules made easy</small></div><div><span>🎮</span><strong>Play</strong><small>Fun quizzes & challenges</small></div><div><span>🏆</span><strong>Practice</strong><small>Improve every day</small></div><div><span>📈</span><strong>Track</strong><small>See your progress</small></div></div>
     </div>
   </section>
 
   <div id="app" hidden>
     <header class="topbar"><a class="brand" href="#dashboard">📚 <span>LearnTense</span></a><nav><button class="nav-btn active" data-screen="dashboard">Dashboard</button><button class="nav-btn" data-screen="library">Tenses</button><button class="nav-btn" data-screen="review">Review</button></nav><div class="top-actions"><span id="userLabel" class="user-label"></span><button class="icon-btn" id="themeBtn">🌙</button><button class="icon-btn" id="logoutBtn">↪</button></div></header>
     <main>
-      <section id="dashboard" class="screen active"><div class="hero"><div><p class="eyebrow">YOUR ENGLISH JOURNEY</p><h1>Learn. Practice. Master. <span>✨</span></h1><p class="muted">Build tense confidence one small practice session at a time.</p></div><button class="primary" id="continueBtn">Continue learning →</button></div><div class="stats-grid"><article class="stat"><span>🎯</span><strong id="accuracyStat">—</strong><small>Accuracy</small></article><article class="stat"><span>🔥</span><strong id="streakStat">0</strong><small>Day streak</small></article><article class="stat"><span>📚</span><strong id="masteredStat">0/12</strong><small>Tenses mastered</small></article><article class="stat"><span>✅</span><strong id="answeredStat">0</strong><small>Questions answered</small></article></div><div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div><article class="continue-card" id="continueCard"></article><div class="two-col"><section class="panel"><div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div><div id="progressList" class="progress-list"></div></section><section class="panel practice-panel"><p class="eyebrow">SMART PRACTICE</p><h2>Practice what needs work</h2><p class="muted">Review questions you missed and strengthen your weakest tense.</p><button class="secondary" id="weakBtn">🧠 Practice weak areas</button><button class="secondary" id="mistakesBtn">🔄 Review mistakes</button></section></div></section>
+      <section id="dashboard" class="screen active">
+        <div class="dashboard-art-hero" role="img" aria-label="LearnTense learning journey with a student and owl companion"><div class="dashboard-art-overlay"><span>LearnTense</span><button class="dashboard-art-button" data-screen="dashboard">▦ &nbsp; Dashboard</button></div></div>
+        <div class="dashboard-welcome"><p class="eyebrow">YOUR ENGLISH JOURNEY</p><h1>Learn. <span>Practice.</span> <strong>Master.</strong> ✨</h1><p class="muted">Build tense confidence one small practice session at a time.</p><button class="primary" id="continueBtn">Continue learning →</button></div>
+        <div class="stats-grid"><article class="stat"><span>🎯</span><strong id="accuracyStat">—</strong><small>Accuracy</small></article><article class="stat"><span>🔥</span><strong id="streakStat">0</strong><small>Day streak</small></article><article class="stat"><span>📚</span><strong id="masteredStat">0/12</strong><small>Tenses mastered</small></article><article class="stat"><span>✅</span><strong id="answeredStat">0</strong><small>Questions answered</small></article></div>
+        <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div><article class="continue-card" id="continueCard"></article>
+        <div class="two-col"><section class="panel"><div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div><div id="progressList" class="progress-list"></div></section><section class="panel practice-panel"><p class="eyebrow">SMART PRACTICE</p><h2>Practice what needs work</h2><p class="muted">Review questions you missed and strengthen your weakest tense.</p><button class="secondary" id="weakBtn">🧠 Practice weak areas</button><button class="secondary" id="mistakesBtn">🔄 Review mistakes</button></section></div>
+      </section>
       <section id="library" class="screen"><div class="page-title"><p class="eyebrow">GRAMMAR LIBRARY</p><h1>All 12 English tenses</h1><p class="muted">Choose a tense to learn its rule, examples and practice questions.</p></div><div id="tenseGrid" class="tense-grid"></div></section>
       <section id="lesson" class="screen narrow"><button class="back-btn" data-screen="library">← Back to tenses</button><article id="lessonCard" class="lesson-card"></article></section>
       <section id="quiz" class="screen narrow"><div id="quizCard"></div></section><section id="result" class="screen narrow"><article id="resultCard" class="result-card"></article></section>
@@ -70,10 +35,5 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/app.js"></script><script src="js/runtime-fixes.js"></script><script src="js/simple-present-games.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded',()=>{
-    const p=document.getElementById('passwordToggle'), input=document.getElementById('authPassword');
-    if(p&&input)p.addEventListener('click',()=>{input.type=input.type==='password'?'text':'password';p.textContent=input.type==='password'?'◉':'◉';});
-  });
-</script>
+<script>document.addEventListener('DOMContentLoaded',()=>{const p=document.getElementById('passwordToggle'),input=document.getElementById('authPassword');if(p&&input)p.addEventListener('click',()=>{input.type=input.type==='password'?'text':'password';});});</script>
 </body></html>
