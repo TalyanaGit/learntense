@@ -50,11 +50,19 @@ learntense/
 ├── css/
 │   └── style.css
 ├── js/
-│   └── app.js
+│   ├── app.js               # core app: auth, dashboard, library, generic quiz engine
+│   ├── lesson-content.js    # lesson text for all 12 tenses, overrides startLesson()
+│   └── simple-present-games.js  # Simple Present: 6 progressive games, 300 questions, 10 skill types
 ├── supabase/
 │   └── schema.sql
 └── README.md
 ```
+
+**Note:** Simple Present has its own dedicated practice system (`simple-present-games.js`)
+with 6 unlockable games of 50 questions each, covering 10 question types (fill-in-the-blank,
+multiple choice, correction, question formation, negatives, true/false, matching,
+picture-based, reordering, short answer). Other tenses currently use the generic
+multiple-choice quiz engine in `app.js`, pulling from the `questions` table in Supabase.
 
 ## Roadmap
 
@@ -70,9 +78,10 @@ learntense/
 - [x] Lesson explanations
 - [x] Multiple-choice practice
 - [x] Instant feedback
-- [ ] Complete lesson content for all 12 tenses
-- [ ] Multiple question types
-- [ ] Difficulty levels
+- [x] Complete lesson content for all 12 tenses
+- [x] Multiple question types (Simple Present only, via `simple-present-games.js`)
+- [x] Difficulty levels (Simple Present only: Easy / Hard / Difficult)
+- [ ] Multiple question types + difficulty levels for the other 11 tenses
 
 ### Phase 3 — Personalization
 - [x] Weak-area recommendation
