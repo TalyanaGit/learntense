@@ -1,19 +1,46 @@
-# 📚 LearnTense
+# 📚 LearnTense 2.0
 
-Learn English tenses through short lessons, interactive practice, mistake review and progress tracking.
+Learn English tenses through a simple learning loop:
 
-## What changed in LearnTense 2.0
+**Learn → Practice → Understand mistakes → Review → Master**
 
-- Dashboard with accuracy, streak, questions answered and mastery
-- Tense library for all 12 English tenses
-- Structured lesson screens with formulas and examples
+## Features
+
+- Dashboard with accuracy, mastery and question statistics
+- Library for all 12 English tenses
+- Structured tense lessons
 - Interactive practice with instant explanations
-- Mistake review queue
 - Weak-area practice
-- Local progress persistence
-- Supabase-ready progress persistence
-- Responsive mobile/tablet/desktop design
-- Dark mode
+- Mistake review
+- Local progress fallback
+- Supabase cloud progress for signed-in users
+- Responsive design and dark mode
+
+## Tech stack
+
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- Supabase
+
+## Supabase setup
+
+1. Open your Supabase project SQL Editor.
+2. Run [`supabase/schema.sql`](supabase/schema.sql).
+3. In Supabase Authentication, enable Email/OTP if you want cloud accounts.
+4. Keep Row Level Security enabled.
+5. Never put a Supabase service-role/secret key in frontend code. The browser should only use the publishable/anon key.
+
+The schema creates:
+
+- `profiles` — learner profile
+- `tenses` — 12-tense catalogue
+- `lessons` — lesson content
+- `questions` — practice questions
+- `user_progress` — per-user mastery
+- `attempts` — individual answers
+- `mistakes` — review queue
+- `achievements` — unlocked achievements
 
 ## Project structure
 
@@ -24,67 +51,38 @@ learntense/
 │   └── style.css
 ├── js/
 │   └── app.js
+├── supabase/
+│   └── schema.sql
 └── README.md
 ```
-
-## Technology
-
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Supabase
-
-## Database direction
-
-The application is designed around these Supabase tables:
-
-- `tenses` — tense catalogue
-- `lessons` — lesson content for each tense
-- `questions` — practice questions
-- `options` — answer options when questions use a normalized option model
-- `user_progress` — learner accuracy and mastery
-- `attempts` — individual question attempts
-- `mistakes` — questions needing review
-- `profiles` — learner profile data
-
-The browser uses the Supabase publishable/anon key only. Keep Row Level Security enabled and never expose a service-role/secret key in frontend code.
-
-## Learning loop
-
-**Learn → Practice → Understand mistakes → Review → Master**
 
 ## Roadmap
 
 ### Phase 1 — Foundation
 - [x] Dashboard
 - [x] Tense library
-- [x] Responsive UI
-- [x] Basic progress tracking
+- [x] Progress tracking
 - [x] Mistake review
-- [ ] Authentication
-- [ ] Complete Supabase schema/RLS
+- [x] Supabase schema + RLS
+- [ ] Email authentication UI
 
 ### Phase 2 — Learning
 - [x] Lesson explanations
 - [x] Multiple-choice practice
 - [x] Instant feedback
+- [ ] Complete lesson content for all 12 tenses
 - [ ] Multiple question types
 - [ ] Difficulty levels
-- [ ] Complete lesson content for all 12 tenses
 
 ### Phase 3 — Personalization
 - [x] Weak-area recommendation
 - [ ] Adaptive question selection
 - [ ] Spaced repetition
 - [ ] Daily practice
-- [ ] Streaks and achievements synced to accounts
+- [ ] Synced streaks and achievements
 
 ### Phase 4 — Product
 - [ ] Profile page
 - [ ] Teacher/admin dashboard
 - [ ] Learning analytics
-- [ ] More grammar topics
-
-## Local development
-
-This is a static frontend. Serve the repository with any local HTTP server or deploy it to a static hosting provider. Configure the Supabase project and database before enabling production user data.
+- [ ] Additional grammar topics
