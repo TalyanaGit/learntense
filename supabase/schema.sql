@@ -1,0 +1,137 @@
+-- LearnTense 2.0 Supabase schema
+-- Run this script in Supabase SQL Editor.
+
+create extension if not exists pgcrypto;
+
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  display_name text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.tenses (
+  id bigint primary key,
+  name text not null unique,
+  category text not null check (category in ('Present','Past','Future')),
+  icon text not null default '📚',
+  description text,
+  sort_order integer not null default 0
+);
+
+create table if not exists public.lessons (
+  id uuid primary key default gen_random_uuid(),
+  tense_id bigint not null references public.tenses(id) on delete cascade,
+  title text not null,
+  content text not null,
+  sort_order integer not null default 0
+);
+
+create table if not exists public.questions (
+  id uuid primary key default gen_random_uuid(),
+  tense_id bigint not null references public.tenses(id) on delete cascade,
+  question_type text not null default 'multiple_choice',
+  question_text text not null,
+  options jsonb not null default '[]'::jsonb,
+  correct_answer integer not null default 0,
+  explanation text,
+  difficulty text not null default 'easy' check (difficulty in ('easy','medium','hard')),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.user_progress (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  tense_id bigint not null references public.tenses(id) on delete cascade,
+  questions_attempted integer not null default 0,
+  correct_answers integer not null default 0,
+  accuracy numeric(5,2) not null default 0,
+  mastery numeric(5,2) not null default 0,
+  last_practiced timestamptz,
+  primary key (user_id, tense_id)
+);
+
+create table if not exists public.attempts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  question_id uuid references public.questions(id) on delete set null,
+  tense_id bigint references public.tenses(id) on delete set null,
+  selected_answer integer,
+  correct boolean not null,
+  time_taken integer,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.mistakes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  question_id uuid references public.questions(id) on delete cascade,
+  tense_id bigint references public.tenses(id) on delete cascade,
+  reviewed boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.achievements (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  achievement_key text not null,
+  unlocked_at timestamptz not null default now(),
+  unique (user_id, achievement_key)
+);
+
+alter table public.profiles enable row level security;
+alter table public.tenses enable row level security;
+alter table public.lessons enable row level security;
+alter table public.questions enable row level security;
+alter table public.user_progress enable row level security;
+alter table public.attempts enable row level security;
+alter table public.mistakes enable row level security;
+alter table public.achievements enable row level security;
+
+-- Public curriculum is readable by everyone. User data is private to its owner.
+drop policy if exists "public read tenses" on public.tenses;
+create policy "public read tenses" on public.tenses for select using (true);
+drop policy if exists "public read lessons" on public.lessons;
+create policy "public read lessons" on public.lessons for select using (true);
+drop policy if exists "public read questions" on public.questions;
+create policy "public read questions" on public.questions for select using (true);
+
+create policy "users read own profile" on public.profiles for select using (auth.uid() = id);
+create policy "users insert own profile" on public.profiles for insert with check (auth.uid() = id);
+create policy "users update own profile" on public.profiles for update using (auth.uid() = id);
+
+create policy "users read own progress" on public.user_progress for select using (auth.uid() = user_id);
+create policy "users insert own progress" on public.user_progress for insert with check (auth.uid() = user_id);
+create policy "users update own progress" on public.user_progress for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "users read own attempts" on public.attempts for select using (auth.uid() = user_id);
+create policy "users insert own attempts" on public.attempts for insert with check (auth.uid() = user_id);
+
+create policy "users read own mistakes" on public.mistakes for select using (auth.uid() = user_id);
+create policy "users insert own mistakes" on public.mistakes for insert with check (auth.uid() = user_id);
+create policy "users update own mistakes" on public.mistakes for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "users read own achievements" on public.achievements for select using (auth.uid() = user_id);
+create policy "users insert own achievements" on public.achievements for insert with check (auth.uid() = user_id);
+
+insert into public.tenses (id,name,category,icon,description,sort_order) values
+(1,'Simple Present','Present','🟢','Habits, routines and facts.',1),
+(2,'Present Continuous','Present','🔵','Actions happening now or around now.',2),
+(3,'Present Perfect','Present','🟣','Past actions connected to the present.',3),
+(4,'Present Perfect Continuous','Present','🟠','Actions continuing over a period of time.',4),
+(5,'Simple Past','Past','🟢','Completed actions in the past.',5),
+(6,'Past Continuous','Past','🔵','Actions in progress at a past time.',6),
+(7,'Past Perfect','Past','🟣','An earlier action before another past action.',7),
+(8,'Past Perfect Continuous','Past','🟠','An ongoing action before another past event.',8),
+(9,'Simple Future','Future','🚀','Predictions, promises and future actions.',9),
+(10,'Future Continuous','Future','⏳','An action that will be in progress.',10),
+(11,'Future Perfect','Future','🏆','An action completed before a future point.',11),
+(12,'Future Perfect Continuous','Future','⭐','Duration continuing up to a future point.',12)
+on conflict (id) do update set name=excluded.name, category=excluded.category, icon=excluded.icon, description=excluded.description, sort_order=excluded.sort_order;
+
+insert into public.questions (tense_id, question_type, question_text, options, correct_answer, explanation, difficulty)
+values
+(1,'multiple_choice','She ___ to school every day.','["go","goes","going","gone"]',1,'With he, she or it in the Simple Present, the verb normally takes -s or -es.','easy'),
+(1,'multiple_choice','Which sentence is correct?','["They plays football.","They play football.","They playing football.","They played every day."]',1,'They is plural, so use the base verb: They play.','easy'),
+(1,'multiple_choice','Which sentence describes a routine?','["I am eating now.","I ate yesterday.","I walk to school every day.","I will eat later."]',2,'Repeated habits and routines are commonly expressed with the Simple Present.','easy'),
+(2,'multiple_choice','Look! The baby ___.','["cries","is crying","cried","has cried"]',1,'An action happening now uses the Present Continuous: is + verb-ing.','easy'),
+(3,'multiple_choice','They ___ their homework.','["have finished","finish yesterday","are finish","has finished"]',0,'Present Perfect uses have/has + past participle. They takes have.','easy')
+on conflict do nothing;
