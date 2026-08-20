@@ -262,3 +262,32 @@
 .profile-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
 .profile-stats-grid .stat{text-align:left}
 @media(max-width:560px){.profile-card{padding:22px 16px}}
+
+/* Live Challenge */
+.challenge-screen{padding-top:32px}
+.challenge-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+.challenge-action-row{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-top:12px}
+.challenge-join-box{display:flex;gap:8px;align-items:center}
+.challenge-join-box .input-control{margin:0}
+.challenge-room-code{display:inline-block;background:var(--primary-soft);color:var(--primary);font-size:1.75rem;font-weight:900;letter-spacing:4px;padding:8px 20px;border-radius:10px;border:1px dashed var(--primary);margin:14px 0}
+.challenge-players{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:18px 0}
+.player-chip{background:var(--primary-soft);padding:10px 14px;border-radius:12px;text-align:center}
+.challenge-avatar{font-size:2rem;line-height:1.1}
+.challenge-scoreboard{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);padding:12px;border-radius:14px;margin-bottom:14px}
+.challenge-ranking{display:flex;gap:7px;flex-wrap:wrap}
+.player-score-tag{background:var(--primary-soft);color:var(--text);padding:5px 9px;border-radius:7px;font-size:.8rem;font-weight:700}
+.challenge-timer{font-weight:900;color:var(--orange);white-space:nowrap}
+.challenge-question{font-size:1.25rem;font-weight:800;margin-bottom:18px}
+.challenge-options{display:flex;flex-direction:column;gap:9px}
+.challenge-option{width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:10px;cursor:pointer}
+.challenge-option:hover{border-color:var(--primary);background:var(--primary-soft)}
+.challenge-correct{border-color:var(--success)!important;background:var(--success-soft)!important}
+.challenge-wrong{border-color:var(--danger)!important;background:var(--danger-soft)!important}
+.challenge-rankings{width:100%;border-collapse:collapse;margin-top:16px}
+.challenge-rankings th,.challenge-rankings td{padding:11px;border-bottom:1px solid var(--line);text-align:left}
+.profile-customize{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.profile-customize h2{margin:0 0 6px}
+.challenge-avatar-grid{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}
+.challenge-avatar-option{font-size:1.8rem;padding:7px;background:var(--bg);border:2px solid transparent;border-radius:9px;cursor:pointer}
+.challenge-avatar-option.selected,.challenge-avatar-option:hover{border-color:var(--primary);transform:translateY(-2px)}
+@media(max-width:700px){.challenge-action-row{flex-direction:column;align-items:stretch}.challenge-join-box{width:100%}.challenge-join-box .input-control{flex:1}.challenge-scoreboard{align-items:flex-start;flex-direction:column}}
