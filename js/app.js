@@ -10,16 +10,37 @@ function openApp(){ $('auth').hidden=true; $('app').hidden=false; $('userLabel')
 async function syncProfile(){
  try{
   const local=JSON.parse(localStorage.getItem('user_profile')||'{}');
-  const {data:existing}=await db.from('profiles').select('display_name,avatar_url').eq('id',currentUser.id).maybeSingle();
-  const displayName=local.displayName||existing?.display_name||(currentUser.email||'Learner').split('@')[0];
-  const avatar=local.avatar||existing?.avatar_url||'🤖';
+  const {data:existing,error:profileError}=await db.from('profiles').select('display_name,avatar_url').eq('id',currentUser.id).maybeSingle();
+  if(profileError) console.warn('Profile lookup failed:',profileError.message);
+
+  // Cloud profile is the source of truth after sign-in. Local storage is only
+  // used as a fallback for first-time/guest use or if the profile does not exist yet.
+  const displayName=(existing?.display_name||local.displayName||(currentUser.email||'Learner').split('@')[0]).trim();
+  const avatar=existing?.avatar_url||local.avatar||'🤖';
+
   localStorage.setItem('user_profile',JSON.stringify({displayName,avatar}));
-  await db.from('profiles').upsert({id:currentUser.id,display_name:displayName,avatar_url:avatar},{onConflict:'id'});
+
+  // Create the cloud profile when it does not exist yet. This also makes the
+  // username/avatar survive logout, browser restarts and another device.
+  if(!existing){
+    const {error}=await db.from('profiles').upsert({
+      id:currentUser.id,
+      display_name:displayName,
+      avatar_url:avatar
+    },{onConflict:'id'});
+    if(error) console.warn('Profile sync save failed:',error.message);
+  }
+
   if($('profile-username'))$('profile-username').value=displayName;
   if($('profileName'))$('profileName').textContent=displayName;
   if($('profileAvatar'))$('profileAvatar').textContent=avatar;
   if($('homeAvatar'))$('homeAvatar').textContent=avatar;
   if($('greetingName'))$('greetingName').textContent=`Hello ${displayName} 👋`;
+
+  // Keep the challenge avatar picker synchronized with the stored profile.
+  document.querySelectorAll('.challenge-avatar-option').forEach(option=>{
+    option.classList.toggle('selected',option.dataset.avatar===avatar);
+  });
  }catch(e){console.warn('Profile sync failed:',e.message)}
 }
 async function renderLeaderboard(){
@@ -30,15 +51,18 @@ async function renderLeaderboard(){
   const{data,error}=await db.rpc('get_leaderboard',{limit_count:50});
   if(error)throw error;
   const rows=data||[];
-  if(!rows.length){el.innerHTML='<article class="panel" style="text-align:center"><h2>🏁 Leaderboard is just getting started</h2><p class="muted">Practice a few questions to claim the top spot!</p></article>';return}
-  const localProfile=JSON.parse(localStorage.getItem('user_profile')||'{}');
-  const myName=(localProfile.displayName||'').toLowerCase();
+  if(!rows.length){el.innerHTML='<article class="panel" style="text-align:center"><h2>🏁 Leaderboard is just getting started</h2><p class="muted">Create a profile and practice a few questions to appear here.</p></article>';return}
   el.innerHTML=`<div class="leaderboard-list">${rows.map((r,i)=>{
-   const me=(r.display_name||'').toLowerCase()===myName;
+   const me=Boolean(r.is_current_user);
    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-   return `<article class="leaderboard-row${me?' me':''}"><span class="lb-rank">${medal}</span><span class="lb-avatar">${(r.display_name||'?').charAt(0).toUpperCase()}</span><span class="lb-name">${r.display_name||'Learner'}${me?' <small>(you)</small>':''}</span><span class="lb-points">${r.points||0}<small> pts</small></span></article>`;
+   const avatar=r.avatar_url||'🤖';
+   const name=r.display_name||'Learner';
+   return `<article class="leaderboard-row${me?' me':''}"><span class="lb-rank">${medal}</span><span class="lb-avatar">${escapeHtml(avatar)}</span><span class="lb-name">${escapeHtml(name)}${me?' <small>(you)</small>':''}</span><span class="lb-points">${Number(r.points)||0}<small> pts</small></span></article>`;
   }).join('')}</div>`;
- }catch(e){el.innerHTML='<article class="panel" style="text-align:center"><h2>🏁 Leaderboard unavailable</h2><p class="muted">We couldn\'t load the leaderboard right now. Try again later.</p></article>';console.warn('Leaderboard load failed:',e.message)}
+ }catch(e){
+  el.innerHTML='<article class="panel" style="text-align:center"><h2>🏁 Leaderboard setup required</h2><p class="muted">The leaderboard database function is not available yet. Run <strong>supabase/leaderboard.sql</strong> once in your Supabase SQL Editor, then refresh this page.</p></article>';
+  console.warn('Leaderboard load failed:',e.message);
+ }
 }
 function showAuth(){ $('auth').hidden=false; $('app').hidden=true }
 function setAuthMode(mode){authMode=mode; $('authSubmit').textContent=mode==='signin'?'Sign in':'Create account';$('authToggle').textContent=mode==='signin'?"Don't have an account? Create one":"Already have an account? Sign in";$('authMessage').textContent=mode==='signin'?'Sign in to save your progress across devices.':'Create an account to save your learning progress.';$('authPassword').value=''}
@@ -114,23 +138,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayName = usernameInput?.value.trim();
     if (!displayName) return alert('Please enter a username.');
 
-    const profileData = { displayName, avatar: selectedAvatar };
-    localStorage.setItem('user_profile', JSON.stringify(profileData));
+    const profileData = { displayName, avatar: selectedAvatar || '🤖' };
+    let cloudSaved = true;
 
     if (currentUser) {
       const { error } = await db.from('profiles').upsert({
         id: currentUser.id,
         display_name: displayName,
-        avatar_url: selectedAvatar
+        avatar_url: profileData.avatar
       }, { onConflict: 'id' });
-      if (error) console.warn('Profile save failed:', error.message);
+      if (error) {
+        cloudSaved = false;
+        console.warn('Profile save failed:', error.message);
+      }
     }
 
+    // Keep a local copy too, so the profile remains available offline/for guests.
+    localStorage.setItem('user_profile', JSON.stringify(profileData));
+
     if ($('profileName')) $('profileName').textContent = displayName;
-    if ($('homeAvatar')) $('homeAvatar').textContent = selectedAvatar;
-    if ($('profileAvatar')) $('profileAvatar').textContent = selectedAvatar;
+    if ($('homeAvatar')) $('homeAvatar').textContent = profileData.avatar;
+    if ($('profileAvatar')) $('profileAvatar').textContent = profileData.avatar;
     if ($('greetingName')) $('greetingName').textContent = `Hello ${displayName} 👋`;
-    alert('Profile saved successfully!');
+
+    if (cloudSaved) alert('Profile saved successfully!');
+    else alert('Profile saved on this device, but could not be synced to your account. Please run the latest Supabase profile migration and try again.');
   });
 
   if (window.ChallengeArena && !window.arena) {
