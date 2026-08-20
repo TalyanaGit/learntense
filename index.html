@@ -18,16 +18,50 @@
   </section>
 
   <div id="app" hidden>
-    <header class="topbar" id="topbar"><a class="brand" href="#dashboard"><span class="brand-mascot">🦁</span><span class="brand-name">LearnTense</span></a><nav class="topbar-nav"><button class="nav-btn active" data-screen="dashboard">Dashboard</button><button class="nav-btn" data-screen="library">Tenses</button><button class="nav-btn" data-screen="review">Review</button><button class="nav-btn" data-screen="profile">Profile</button></nav><div class="top-actions"><span id="userLabel" class="user-label"></span><button class="icon-btn" id="themeBtn">🌙</button><button class="icon-btn" id="logoutBtn">↪</button></div></header>
+    <header class="topbar" id="topbar">
+      <a class="brand" href="#dashboard"><span class="brand-mascot">🦁</span><span class="brand-name">LearnTense</span></a>
+      <nav class="topbar-nav" aria-label="Primary">
+        <button class="nav-btn active" data-screen="dashboard"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+        <button class="nav-btn" data-screen="discover"><span class="nav-icon">🧭</span><span class="nav-label">Discover</span></button>
+        <button class="nav-btn" data-screen="review"><span class="nav-icon">🔄</span><span class="nav-label">Review</span></button>
+        <button class="nav-btn" data-screen="profile"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
+      </nav>
+      <div class="top-actions">
+        <span id="userLabel" class="user-label"></span>
+        <div class="overflow-wrap">
+          <button class="icon-btn" id="overflowBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More options">⋯</button>
+          <div class="overflow-menu" id="overflowMenu" hidden>
+            <button class="overflow-item" id="themeBtn" type="button">🌙 <span>Toggle theme</span></button>
+            <button class="overflow-item" id="logoutBtn" type="button">↪ <span>Log out</span></button>
+          </div>
+        </div>
+      </div>
+    </header>
     <main>
       <section id="dashboard" class="screen active">
-        <div class="home-greeting"><div class="home-greeting-text"><p class="eyebrow">WELCOME BACK</p><h1 id="greetingName">Hello there 👋</h1><p class="muted">Let's start your practice now</p></div><div class="home-avatar" id="homeAvatar">🦁</div></div>
+        <div class="home-greeting"><div class="home-greeting-text"><p class="eyebrow">WELCOME BACK</p><h1 id="greetingName">Hello there 👋</h1><p class="muted">Choose a topic to explore</p></div><div class="home-avatar" id="homeAvatar">🦁</div></div>
+        <div class="topic-grid">
+          <article class="topic-card" data-screen="library"><span class="topic-icon">⏳</span><h3>Tense</h3><p>Past, present &amp; future — 12 tenses in 4 stages each.</p><span class="badge">Start learning →</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">📦</span><h3>Noun</h3><p>People, places, things and ideas.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">🔁</span><h3>Pronoun</h3><p>Words that stand in for nouns.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">⚡</span><h3>Verb</h3><p>Actions and states of being.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">🎨</span><h3>Adjective</h3><p>Words that describe nouns.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">🏃</span><h3>Adverb</h3><p>Words that describe verbs, adjectives or other adverbs.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">📍</span><h3>Preposition</h3><p>Words that show place, time or direction.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">🔗</span><h3>Conjunction</h3><p>Words that join words, phrases or clauses.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">❗</span><h3>Interjection</h3><p>Words that show sudden feeling.</p><span class="badge badge-soon">Coming soon</span></article>
+          <article class="topic-card coming-soon"><span class="topic-icon">🔤</span><h3>Article</h3><p>A, an and the.</p><span class="badge badge-soon">Coming soon</span></article>
+        </div>
+      </section>
+      <section id="discover" class="screen">
+        <div class="page-title"><p class="eyebrow">PRACTICE HUB</p><h1>How you're doing</h1><p class="muted">Your stats, what to practice next, and where you left off.</p></div>
         <div class="home-search"><span>🔍</span><input type="text" id="tenseSearch" placeholder="Search a tense…" autocomplete="off"><div id="tenseSearchResults" class="home-search-results"></div></div>
         <div class="stats-grid"><article class="stat"><span>🎯</span><strong id="accuracyStat">—</strong><small>Accuracy</small></article><article class="stat"><span>🔥</span><strong id="streakStat">0</strong><small>Day streak</small></article><article class="stat"><span>📚</span><strong id="masteredStat">0/12</strong><small>Tenses mastered</small></article><article class="stat"><span>✅</span><strong id="answeredStat">0</strong><small>Questions answered</small></article></div>
         <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div><article class="continue-card" id="continueCard"></article>
         <div class="two-col"><section class="panel"><div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div><div id="progressList" class="progress-list"></div></section><section class="panel practice-panel"><p class="eyebrow">SMART PRACTICE</p><h2>Practice what needs work</h2><p class="muted">Review questions you missed and strengthen your weakest tense.</p><button class="secondary" id="weakBtn">🧠 Practice weak areas</button><button class="secondary" id="mistakesBtn">🔄 Review mistakes</button></section></div>
       </section>
       <section id="library" class="screen era-screen" data-era="present">
+        <button class="back-btn" data-screen="dashboard">← Back to topics</button>
         <div class="page-title"><p class="eyebrow">GRAMMAR LIBRARY</p><h1>Travel through time to learn all 12 tenses</h1><p class="muted">Pick an era, then complete its 4 stages: Simple → Continuous → Perfect → Perfect Continuous.</p></div>
         <div class="era-tabs" id="eraTabs"></div>
         <div class="era-guide" id="eraGuide"></div>
@@ -58,12 +92,6 @@
         </div>
       </section>
     </main><footer>LearnTense · Learn English tenses by practicing</footer>
-    <nav class="bottom-nav" aria-label="Primary">
-      <button class="nav-btn bn-item active" data-screen="dashboard"><span class="bn-icon">🏠</span><small>Home</small></button>
-      <button class="nav-btn bn-item" data-screen="library"><span class="bn-icon">🧭</span><small>Discover</small></button>
-      <button class="nav-btn bn-item" data-screen="review"><span class="bn-icon">🔄</span><small>Review</small></button>
-      <button class="nav-btn bn-item" data-screen="profile"><span class="bn-icon">👤</span><small>Profile</small></button>
-    </nav>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/app.js"></script><script src="js/runtime-fixes.js"></script><script src="js/lesson-content.js"></script><script src="js/simple-present-games.js"></script><script src="js/gamify.js"></script><script src="js/ui-revamp.js"></script><script src="js/eras.js"></script>
