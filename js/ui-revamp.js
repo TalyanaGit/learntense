@@ -110,6 +110,51 @@
     return r;
   });
 
+  // Streak pill in the header (next to the XP badge gamify.js already injects)
+  function renderHeaderStreak() {
+    const actions = document.querySelector('.top-actions');
+    if (!actions) return;
+    const days = Number(localStorage.getItem('streak') || 0);
+    let pill = document.getElementById('ltStreakPill');
+    if (!pill) {
+      pill = document.createElement('span');
+      pill.className = 'lt-streak-pill';
+      pill.id = 'ltStreakPill';
+      const xpBadge = document.getElementById('ltXpBadge');
+      if (xpBadge) actions.insertBefore(pill, xpBadge);
+      else actions.insertBefore(pill, actions.firstChild);
+    }
+    pill.innerHTML = days > 0 ? `🔥 <b>${days}</b>` : `🔥 <b>0</b>`;
+    pill.classList.toggle('lt-streak-live', days > 0);
+  }
+
+  // Sticky header gets a shadow once the page scrolls, so it reads as
+  // "floating above" content rather than just sitting there.
+  function wireHeaderScrollShadow() {
+    const header = document.getElementById('topbar');
+    if (!header || header.dataset.scrollWired) return;
+    header.dataset.scrollWired = '1';
+    const onScroll = () => header.classList.toggle('lt-scrolled', window.scrollY > 4);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  wrap('renderDashboard', orig => function () {
+    const r = orig.apply(this, arguments);
+    renderHeaderStreak();
+    return r;
+  });
+
+  wrap('openApp', orig => function () {
+    const r = orig.apply(this, arguments);
+    renderHeaderStreak();
+    wireHeaderScrollShadow();
+    return r;
+  });
+
+  document.addEventListener('DOMContentLoaded', () => { renderHeaderStreak(); wireHeaderScrollShadow(); });
+  if (document.readyState !== 'loading') { renderHeaderStreak(); wireHeaderScrollShadow(); }
+
   document.addEventListener('DOMContentLoaded', wireProfileExtras);
   if (document.readyState !== 'loading') wireProfileExtras();
 })();
