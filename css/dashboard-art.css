@@ -1,6 +1,0 @@
-.dashboard-art-hero{background-image:url('../assets/image.jpg');background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.85)}
-.dashboard-art-hero:before,.dashboard-art-hero:after{content:none}
-.dashboard-art-overlay{left:28px;right:28px;top:24px}
-.dashboard-art-hero:has(.dashboard-art-overlay)::after{content:none}
-@media(max-width:800px){.dashboard-art-hero{min-height:300px;background-position:center}}
-@media(max-width:560px){.dashboard-art-hero{min-height:260px;background-position:center}}
