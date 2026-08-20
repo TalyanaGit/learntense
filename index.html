@@ -5,7 +5,6 @@
   <meta name="description" content="Learn English tenses through lessons, practice and progress tracking.">
   <title>LearnTense — Learn, Practice, Master</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/dashboard-art.css">
 </head>
 <body>
 <div class="app-shell">
@@ -22,8 +21,7 @@
     <header class="topbar"><a class="brand" href="#dashboard">📚 <span>LearnTense</span></a><nav><button class="nav-btn active" data-screen="dashboard">Dashboard</button><button class="nav-btn" data-screen="library">Tenses</button><button class="nav-btn" data-screen="review">Review</button></nav><div class="top-actions"><span id="userLabel" class="user-label"></span><button class="icon-btn" id="themeBtn">🌙</button><button class="icon-btn" id="logoutBtn">↪</button></div></header>
     <main>
       <section id="dashboard" class="screen active">
-        <div class="dashboard-art-hero" role="img" aria-label="LearnTense learning journey with a student and owl companion"><div class="dashboard-art-overlay"><span>LearnTense</span><button class="dashboard-art-button" data-screen="dashboard">▦ &nbsp; Dashboard</button></div></div>
-        <div class="dashboard-welcome"><p class="eyebrow">YOUR ENGLISH JOURNEY</p><h1>Learn. <span>Practice.</span> <strong>Master.</strong> ✨</h1><p class="muted">Build tense confidence one small practice session at a time.</p><button class="primary" id="continueBtn">Continue learning →</button></div>
+        <div class="dashboard-welcome"><p class="eyebrow">YOUR ENGLISH JOURNEY</p><h1>Learn. <span>Practice.</span> <strong>Master.</strong> ✨</h1><p class="muted">Build tense confidence one small practice session at a time.</p></div>
         <div class="stats-grid"><article class="stat"><span>🎯</span><strong id="accuracyStat">—</strong><small>Accuracy</small></article><article class="stat"><span>🔥</span><strong id="streakStat">0</strong><small>Day streak</small></article><article class="stat"><span>📚</span><strong id="masteredStat">0/12</strong><small>Tenses mastered</small></article><article class="stat"><span>✅</span><strong id="answeredStat">0</strong><small>Questions answered</small></article></div>
         <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div><article class="continue-card" id="continueCard"></article>
         <div class="two-col"><section class="panel"><div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div><div id="progressList" class="progress-list"></div></section><section class="panel practice-panel"><p class="eyebrow">SMART PRACTICE</p><h2>Practice what needs work</h2><p class="muted">Review questions you missed and strengthen your weakest tense.</p><button class="secondary" id="weakBtn">🧠 Practice weak areas</button><button class="secondary" id="mistakesBtn">🔄 Review mistakes</button></section></div>
