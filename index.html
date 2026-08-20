@@ -18,10 +18,11 @@
   </section>
 
   <div id="app" hidden>
-    <header class="topbar"><a class="brand" href="#dashboard">📚 <span>LearnTense</span></a><nav><button class="nav-btn active" data-screen="dashboard">Dashboard</button><button class="nav-btn" data-screen="library">Tenses</button><button class="nav-btn" data-screen="review">Review</button></nav><div class="top-actions"><span id="userLabel" class="user-label"></span><button class="icon-btn" id="themeBtn">🌙</button><button class="icon-btn" id="logoutBtn">↪</button></div></header>
+    <header class="topbar"><a class="brand" href="#dashboard">📚 <span>LearnTense</span></a><nav><button class="nav-btn active" data-screen="dashboard">Dashboard</button><button class="nav-btn" data-screen="library">Tenses</button><button class="nav-btn" data-screen="review">Review</button><button class="nav-btn" data-screen="profile">Profile</button></nav><div class="top-actions"><span id="userLabel" class="user-label"></span><button class="icon-btn" id="themeBtn">🌙</button><button class="icon-btn" id="logoutBtn">↪</button></div></header>
     <main>
       <section id="dashboard" class="screen active">
-        <div class="dashboard-welcome"><p class="eyebrow">YOUR ENGLISH JOURNEY</p><h1>Learn. <span>Practice.</span> <strong>Master.</strong> ✨</h1><p class="muted">Build tense confidence one small practice session at a time.</p></div>
+        <div class="home-greeting"><div class="home-greeting-text"><p class="eyebrow">WELCOME BACK</p><h1 id="greetingName">Hello there 👋</h1><p class="muted">Let's start your practice now</p></div><div class="home-avatar" id="homeAvatar">🦉</div></div>
+        <div class="home-search"><span>🔍</span><input type="text" id="tenseSearch" placeholder="Search a tense…" autocomplete="off"><div id="tenseSearchResults" class="home-search-results"></div></div>
         <div class="stats-grid"><article class="stat"><span>🎯</span><strong id="accuracyStat">—</strong><small>Accuracy</small></article><article class="stat"><span>🔥</span><strong id="streakStat">0</strong><small>Day streak</small></article><article class="stat"><span>📚</span><strong id="masteredStat">0/12</strong><small>Tenses mastered</small></article><article class="stat"><span>✅</span><strong id="answeredStat">0</strong><small>Questions answered</small></article></div>
         <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div><article class="continue-card" id="continueCard"></article>
         <div class="two-col"><section class="panel"><div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div><div id="progressList" class="progress-list"></div></section><section class="panel practice-panel"><p class="eyebrow">SMART PRACTICE</p><h2>Practice what needs work</h2><p class="muted">Review questions you missed and strengthen your weakest tense.</p><button class="secondary" id="weakBtn">🧠 Practice weak areas</button><button class="secondary" id="mistakesBtn">🔄 Review mistakes</button></section></div>
@@ -30,9 +31,32 @@
       <section id="lesson" class="screen narrow"><button class="back-btn" data-screen="library">← Back to tenses</button><article id="lessonCard" class="lesson-card"></article></section>
       <section id="quiz" class="screen narrow"><div id="quizCard"></div></section><section id="result" class="screen narrow"><article id="resultCard" class="result-card"></article></section>
       <section id="review" class="screen"><div class="page-title"><p class="eyebrow">SMART REVIEW</p><h1>Your practice queue</h1><p class="muted">Questions you missed are collected here for targeted revision.</p></div><div id="reviewContent" class="review-grid"></div></section>
+      <section id="profile" class="screen narrow"><div class="profile-header"><h1>Profile</h1><button class="icon-btn" data-screen="dashboard" aria-label="Close">✕</button></div>
+        <div class="profile-card">
+          <div class="profile-avatar-wrap"><div class="profile-avatar" id="profileAvatar">🦉</div></div>
+          <h2 id="profileName">Guest learner</h2>
+          <p class="muted" id="profileEmail"></p>
+          <button class="pill-btn" id="profileLogoutBtn">↪ Log out</button>
+          <div class="profile-tabs"><button class="pill-tab active">Overview</button><button class="pill-tab">My Statistics</button></div>
+          <div class="profile-streak-card"><span class="profile-streak-icon">🔥</span><div><strong id="profileStreak">0 Days</strong><small>Streak</small></div></div>
+          <div class="profile-stats-grid">
+            <article class="stat"><span>🎯</span><strong id="profileAccuracy">—</strong><small>Accuracy</small></article>
+            <article class="stat"><span>📚</span><strong id="profileMastered">0/12</strong><small>Tenses mastered</small></article>
+            <article class="stat"><span>✅</span><strong id="profileAnswered">0</strong><small>Questions answered</small></article>
+            <article class="stat"><span>⭐</span><strong id="profileLevel">Lv 1</strong><small>XP level</small></article>
+          </div>
+          <button class="secondary" id="profileThemeBtn">🌙 Toggle dark mode</button>
+        </div>
+      </section>
     </main><footer>LearnTense · Learn English tenses by practicing</footer>
+    <nav class="bottom-nav" aria-label="Primary">
+      <button class="nav-btn bn-item active" data-screen="dashboard"><span class="bn-icon">🏠</span><small>Home</small></button>
+      <button class="nav-btn bn-item" data-screen="library"><span class="bn-icon">🧭</span><small>Discover</small></button>
+      <button class="nav-btn bn-item" data-screen="review"><span class="bn-icon">🔄</span><small>Review</small></button>
+      <button class="nav-btn bn-item" data-screen="profile"><span class="bn-icon">👤</span><small>Profile</small></button>
+    </nav>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/app.js"></script><script src="js/runtime-fixes.js"></script><script src="js/lesson-content.js"></script><script src="js/simple-present-games.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/app.js"></script><script src="js/runtime-fixes.js"></script><script src="js/lesson-content.js"></script><script src="js/simple-present-games.js"></script><script src="js/gamify.js"></script><script src="js/ui-revamp.js"></script>
 <script>document.addEventListener('DOMContentLoaded',()=>{const p=document.getElementById('passwordToggle'),input=document.getElementById('authPassword');if(p&&input)p.addEventListener('click',()=>{input.type=input.type==='password'?'text':'password';});});</script>
 </body></html>
