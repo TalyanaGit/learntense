@@ -23,8 +23,7 @@
       <nav class="topbar-nav" aria-label="Primary">
         <button class="nav-btn active" data-screen="dashboard"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
         <button class="nav-btn" data-screen="discover"><span class="nav-icon">🧭</span><span class="nav-label">Discover</span></button>
-        <button class="nav-btn" data-screen="review"><span class="nav-icon">🔄</span><span class="nav-label">Review</span></button>
-        <button class="nav-btn" data-screen="challenge"><span class="nav-icon">⚔️</span><span class="nav-label">Live Challenge</span></button>
+                <button class="nav-btn" data-screen="challenge"><span class="nav-icon">⚔️</span><span class="nav-label">Live Challenge</span></button>
         <button class="nav-btn" data-screen="profile"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
       </nav>
       <div class="top-actions" hidden>
@@ -129,8 +128,6 @@
           <button id="btn-exit-challenge" class="secondary" type="button">Back to Challenge Lobby</button>
         </div>
       </section>
-
-      <section id="review" class="screen"><div class="page-title"><p class="eyebrow">SMART REVIEW</p><h1>Your practice queue</h1><p class="muted">Questions you missed are collected here for targeted revision.</p></div><div id="reviewContent" class="review-grid"></div></section>
       <section id="profile" class="screen narrow"><div class="profile-header"><h1>Profile</h1><button class="icon-btn" data-screen="dashboard" aria-label="Close">✕</button></div>
         <div class="profile-card">
           <div class="profile-avatar-wrap"><div class="profile-avatar" id="profileAvatar">🦁</div></div>
@@ -165,16 +162,13 @@
           </div>
           <button class="secondary" id="profileThemeBtn">🌙 Toggle dark mode</button>
           <button class="secondary" id="profileSoundBtn" type="button">🔊 Sound on</button>
-          <button class="secondary" id="parentViewBtn">👨‍👩‍👧 Parent / teacher view</button>
+          <button class="secondary" id="parentViewBtn">👨‍👩‍👧 Parent / teacher dashboard</button>
           <div class="parent-view" id="parentView" hidden></div>
           <div class="stat-mirror" hidden><strong id="accuracyStat">—</strong><strong id="streakStat">0</strong><strong id="masteredStat">0/12</strong><strong id="answeredStat">0</strong></div>
           <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div>
           <article class="continue-card" id="continueCard"></article>
           <div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div>
           <div id="progressList" class="progress-list"></div>
-          <p class="eyebrow" style="margin-top:18px">SMART PRACTICE</p>
-          <button class="secondary" id="weakBtn">🧠 Practice weak areas</button>
-          <button class="secondary" id="mistakesBtn">🔄 Review mistakes</button>
         </div>
       </section>
     </main><footer>LearnTense · Learn English tenses by practicing</footer>
