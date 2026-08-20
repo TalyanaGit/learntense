@@ -5,9 +5,23 @@ const fallbackTenses=[{id:1,name:"Simple Present",category:"Present",icon:"🟢"
 let tenses=[],progress={},currentTense=null,questions=[],qIndex=0,score=0,answered=false,mistakes=[],currentUser=null,isGuest=false,authMode='signin';
 const demoQuestions={1:[{question:"She ___ to school every day.",options:["go","goes","going","gone"],answer:1,explanation:"With he, she or it in the Simple Present, the verb normally takes -s or -es."},{question:"Which sentence is correct?",options:["They plays football.","They play football.","They playing football.","They played every day."],answer:1,explanation:"They is plural, so use the base verb: They play."}],2:[{question:"Look! The baby ___.",options:["cries","is crying","cried","has cried"],answer:1,explanation:"An action happening now uses the Present Continuous: is + verb-ing."}],3:[{question:"They ___ their homework.",options:["have finished","finish yesterday","are finish","has finished"],answer:0,explanation:"Present Perfect uses have/has + past participle. They takes have."}]};
 function $(id){return document.getElementById(id)}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='review')loadReview();if(id==='discover')renderLeaderboard()}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='discover')renderLeaderboard()}
 function openApp(){ $('auth').hidden=true; $('app').hidden=false; $('userLabel').textContent=currentUser?currentUser.email:'Guest'; if(currentUser)syncProfile(); loadTenses() }
-async function syncProfile(){try{await db.from('profiles').upsert({id:currentUser.id,display_name:(currentUser.email||'Learner').split('@')[0]},{onConflict:'id'})}catch(e){console.warn('Profile sync failed:',e.message)}}
+async function syncProfile(){
+ try{
+  const local=JSON.parse(localStorage.getItem('user_profile')||'{}');
+  const {data:existing}=await db.from('profiles').select('display_name,avatar_url').eq('id',currentUser.id).maybeSingle();
+  const displayName=local.displayName||existing?.display_name||(currentUser.email||'Learner').split('@')[0];
+  const avatar=local.avatar||existing?.avatar_url||'🤖';
+  localStorage.setItem('user_profile',JSON.stringify({displayName,avatar}));
+  await db.from('profiles').upsert({id:currentUser.id,display_name:displayName,avatar_url:avatar},{onConflict:'id'});
+  if($('profile-username'))$('profile-username').value=displayName;
+  if($('profileName'))$('profileName').textContent=displayName;
+  if($('profileAvatar'))$('profileAvatar').textContent=avatar;
+  if($('homeAvatar'))$('homeAvatar').textContent=avatar;
+  if($('greetingName'))$('greetingName').textContent=`Hello ${displayName} 👋`;
+ }catch(e){console.warn('Profile sync failed:',e.message)}
+}
 async function renderLeaderboard(){
  const el=$('leaderboardContent');if(!el)return;
  if(!currentUser){el.innerHTML='<article class="panel" style="text-align:center"><h2>🔒 Sign in to join the leaderboard</h2><p class="muted">Create a free account to earn points and see how you rank against other learners.</p></article>';return}
@@ -17,7 +31,8 @@ async function renderLeaderboard(){
   if(error)throw error;
   const rows=data||[];
   if(!rows.length){el.innerHTML='<article class="panel" style="text-align:center"><h2>🏁 Leaderboard is just getting started</h2><p class="muted">Practice a few questions to claim the top spot!</p></article>';return}
-  const myName=(currentUser.email||'').split('@')[0].toLowerCase();
+  const localProfile=JSON.parse(localStorage.getItem('user_profile')||'{}');
+  const myName=(localProfile.displayName||'').toLowerCase();
   el.innerHTML=`<div class="leaderboard-list">${rows.map((r,i)=>{
    const me=(r.display_name||'').toLowerCase()===myName;
    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
@@ -37,7 +52,7 @@ document.addEventListener('click',e=>{
  if(soon){soon.classList.remove('lt-shake');void soon.offsetWidth;soon.classList.add('lt-shake')}
 });
 $('themeBtn').onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('learntense-theme',document.documentElement.dataset.theme)};if(localStorage.getItem('learntense-theme')==='dark')document.documentElement.dataset.theme='dark';
-$('weakBtn').onclick=()=>startWeakPractice();$('mistakesBtn').onclick=()=>showScreen('review');
+$('weakBtn')?.addEventListener('click',()=>startWeakPractice());$('mistakesBtn')?.addEventListener('click',()=>showScreen('review'));
 async function loadTenses(){try{const{data,error}=await db.from('tenses').select('*').order('id');if(error)throw error;tenses=(data||[]).map(t=>({...t,...(fallbackTenses.find(x=>x.id===t.id)||{})}));}catch(e){tenses=fallbackTenses}if(!tenses.length)tenses=fallbackTenses;tenses=fallbackTenses.map(f=>tenses.find(t=>t.id===f.id)||f);renderLibrary();await loadProgress()}
 async function loadProgress(){progress=JSON.parse(localStorage.getItem('learntense-progress')||'{}');try{let q=db.from('user_progress').select('*');if(currentUser)q=q.eq('user_id',currentUser.id);const{data,error}=await q;if(!error&&data)data.forEach(p=>progress[p.tense_id]={attempted:p.questions_attempted||0,correct:p.correct_answers||0,mastery:p.mastery||p.accuracy||0,lastPracticed:p.last_practiced});}catch(e){}renderDashboard();renderLibrary();renderReview()}
 function getP(id){return progress[id]||{attempted:0,correct:0,mastery:0,lastPracticed:null}}function mastery(id){const p=getP(id);return p.mastery||(p.attempted?Math.round(p.correct/p.attempted*100):0)}

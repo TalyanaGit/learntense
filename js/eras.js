@@ -151,16 +151,99 @@
     showScreen('quiz'); renderQuestion();
   };
 
-  // ---------------- Parent / teacher view ----------------
+  // ---------------- Parent / teacher dashboard ----------------
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  }
+
+  async function resetTenseProgress(tenseId) {
+    const t = tenses.find(x => x.id === Number(tenseId));
+    if (!t) return;
+    if (!confirm(`Reset ${t.name} progress? This only resets this tense.`)) return;
+    progress[t.id] = { attempted: 0, correct: 0, mastery: 0, lastPracticed: null };
+    localStorage.setItem('learntense-progress', JSON.stringify(progress));
+    if (currentUser) {
+      try {
+        const { error } = await db.from('user_progress').delete().eq('user_id', currentUser.id).eq('tense_id', t.id);
+        if (error) throw error;
+        await db.from('attempts').delete().eq('user_id', currentUser.id).eq('tense_id', t.id);
+      } catch (e) {
+        alert('Local progress was reset, but cloud progress could not be reset. Please check Supabase permissions.');
+        console.warn('Tense reset failed:', e.message);
+      }
+    }
+    renderParentView();
+    renderDashboard();
+    renderLibrary();
+  }
+
+  async function resetAllProgress() {
+    if (!confirm('Reset the entire learner profile progress? This removes all tense progress, attempts and streak data.')) return;
+    progress = {};
+    localStorage.removeItem('learntense-progress');
+    localStorage.removeItem('learntense-mistakes');
+    localStorage.removeItem('streak');
+    localStorage.removeItem('lastTense');
+    if (currentUser) {
+      try {
+        await db.from('user_progress').delete().eq('user_id', currentUser.id);
+        await db.from('attempts').delete().eq('user_id', currentUser.id);
+        await db.from('mistakes').delete().eq('user_id', currentUser.id);
+      } catch (e) {
+        alert('Local progress was reset, but some cloud history could not be reset. Please check Supabase permissions.');
+        console.warn('Full reset failed:', e.message);
+      }
+    }
+    renderParentView();
+    renderDashboard();
+    renderLibrary();
+  }
+
+  window.resetTenseProgress = resetTenseProgress;
+  window.resetAllProgress = resetAllProgress;
+
   function renderParentView() {
     const wrap = document.getElementById('parentView');
     if (!wrap) return;
-    wrap.innerHTML = ERAS.map(era => {
-      const list = eraTenses(era);
-      return `<div class="parent-era"><h4>${era.icon} ${era.label} — ${eraProgressPct(era)}% overall</h4>
-        <ul>${list.map((t, i) => t ? `<li><span>${ASPECTS[i].label}: ${t.name}</span><span>${mastery(t.id)}%</span></li>` : '').join('')}</ul>
+    const total = tenses.reduce((a, t) => a + getP(t.id).attempted, 0);
+    const correct = tenses.reduce((a, t) => a + getP(t.id).correct, 0);
+    const accuracy = total ? Math.round(correct / total * 100) : 0;
+    const mastered = tenses.filter(t => mastery(t.id) >= 95).length;
+    const overall = tenses.length ? Math.round(tenses.reduce((a, t) => a + mastery(t.id), 0) / tenses.length) : 0;
+    const learnerName = escapeHtml(localStorage.getItem('user_profile') ? (JSON.parse(localStorage.getItem('user_profile')).displayName || 'Learner') : 'Learner');
+
+    wrap.innerHTML = `
+      <div class="parent-dashboard">
+        <div class="parent-dashboard-head">
+          <div><p class="eyebrow">PARENT / TEACHER</p><h2>${learnerName}'s progress</h2><p class="muted">Monitor learning and safely reset progress when revision is needed.</p></div>
+          <span class="parent-overall-badge">${overall}% overall</span>
+        </div>
+        <div class="parent-stats-grid">
+          <div><strong>${accuracy}%</strong><small>Accuracy</small></div>
+          <div><strong>${total}</strong><small>Questions answered</small></div>
+          <div><strong>${mastered}/12</strong><small>Tenses mastered</small></div>
+          <div><strong>${Number(localStorage.getItem('streak') || 0)}</strong><small>Day streak</small></div>
+        </div>
+        <div class="parent-section">
+          <div class="section-head"><div><p class="eyebrow">PROGRESS BY TENSE</p><h3>Strength and revision needs</h3></div></div>
+          <div class="parent-tense-list">
+            ${tenses.map(t => {
+              const m = mastery(t.id);
+              const status = m >= 80 ? 'Strong' : m >= 50 ? 'Needs practice' : 'Needs attention';
+              return `<div class="parent-tense-row"><div class="parent-tense-main"><span>${t.icon} ${escapeHtml(t.name)}</span><strong>${m}%</strong></div><div class="progress-track"><div class="progress-fill" style="width:${m}%"></div></div><div class="parent-tense-actions"><small>${status}</small><button class="secondary small" onclick="resetTenseProgress(${t.id})">↻ Reset level</button></div></div>`;
+            }).join('')}
+          </div>
+        </div>
+        <div class="parent-section parent-controls">
+          <div><p class="eyebrow">RESET & CONTROL</p><h3>Revision controls</h3><p class="muted">Resetting a level leaves all other tense progress untouched. Full reset starts the learner's progress again from the beginning.</p></div>
+          <button class="danger-btn" onclick="resetAllProgress()">⚠ Reset entire profile progress</button>
+        </div>
+        <div class="parent-section parent-tools-grid">
+          <article><span>🎯</span><div><strong>Practice target</strong><p class="muted">Use the progress above to decide which tense should be practised next.</p></div></article>
+          <article><span>📋</span><div><strong>Assignments</strong><p class="muted">Teacher assignments can be added here when class management is enabled.</p></div></article>
+          <article><span>📈</span><div><strong>Activity history</strong><p class="muted">Recent attempts are stored in the learner's account for future reporting.</p></div></article>
+        </div>
       </div>`;
-    }).join('');
   }
 
   function wireParentView() {
