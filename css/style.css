@@ -291,3 +291,26 @@
 .challenge-avatar-option{font-size:1.8rem;padding:7px;background:var(--bg);border:2px solid transparent;border-radius:9px;cursor:pointer}
 .challenge-avatar-option.selected,.challenge-avatar-option:hover{border-color:var(--primary);transform:translateY(-2px)}
 @media(max-width:700px){.challenge-action-row{flex-direction:column;align-items:stretch}.challenge-join-box{width:100%}.challenge-join-box .input-control{flex:1}.challenge-scoreboard{align-items:flex-start;flex-direction:column}}
+
+/* Parent / teacher dashboard */
+.parent-view { margin-top: 1rem; }
+.parent-dashboard { display: grid; gap: 1rem; }
+.parent-dashboard-head { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; padding:1rem; background:var(--surface, #f8fafc); border:1px solid var(--border, #e2e8f0); border-radius:16px; }
+.parent-overall-badge { font-weight:800; padding:.45rem .7rem; border-radius:999px; background:#dbeafe; color:#1d4ed8; white-space:nowrap; }
+.parent-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; }
+.parent-stats-grid > div { padding:1rem; border:1px solid var(--border,#e2e8f0); border-radius:14px; background:var(--surface,#fff); }
+.parent-stats-grid strong { display:block; font-size:1.35rem; }
+.parent-stats-grid small { color:var(--muted,#64748b); }
+.parent-section { padding:1rem; border:1px solid var(--border,#e2e8f0); border-radius:16px; background:var(--surface,#fff); }
+.parent-tense-list { display:grid; gap:.8rem; }
+.parent-tense-row { padding:.75rem; background:rgba(148,163,184,.08); border-radius:12px; }
+.parent-tense-main,.parent-tense-actions { display:flex; justify-content:space-between; align-items:center; gap:.75rem; }
+.parent-tense-actions { margin-top:.45rem; }
+.parent-tense-actions small { color:var(--muted,#64748b); }
+.small { padding:.4rem .65rem !important; font-size:.78rem; }
+.danger-btn { border:0; border-radius:10px; padding:.7rem 1rem; background:#fee2e2; color:#b91c1c; font-weight:700; cursor:pointer; }
+.parent-tools-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
+.parent-tools-grid article { display:flex; gap:.75rem; padding:.8rem; border:1px solid var(--border,#e2e8f0); border-radius:12px; }
+.parent-tools-grid article > span { font-size:1.5rem; }
+.parent-tools-grid p { margin:.2rem 0 0; }
+@media (max-width:700px){ .parent-stats-grid{grid-template-columns:repeat(2,1fr)} .parent-tools-grid{grid-template-columns:1fr} .parent-dashboard-head{flex-direction:column} }
