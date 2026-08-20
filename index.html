@@ -24,6 +24,7 @@
         <button class="nav-btn active" data-screen="dashboard"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
         <button class="nav-btn" data-screen="discover"><span class="nav-icon">🧭</span><span class="nav-label">Discover</span></button>
         <button class="nav-btn" data-screen="review"><span class="nav-icon">🔄</span><span class="nav-label">Review</span></button>
+        <button class="nav-btn" data-screen="challenge"><span class="nav-icon">⚔️</span><span class="nav-label">Live Challenge</span></button>
         <button class="nav-btn" data-screen="profile"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
       </nav>
       <div class="top-actions" hidden>
@@ -64,6 +65,71 @@
       </section>
       <section id="lesson" class="screen narrow"><button class="back-btn" data-screen="library">← Back to tenses</button><article id="lessonCard" class="lesson-card"></article></section>
       <section id="quiz" class="screen narrow"><div id="quizCard"></div></section><section id="result" class="screen narrow"><article id="resultCard" class="result-card"></article></section>
+
+      <section id="challenge" class="screen challenge-screen">
+        <div class="page-title">
+          <p class="eyebrow">LIVE CHALLENGE</p>
+          <h1>Compete in real time</h1>
+          <p class="muted">Answer the same questions simultaneously. Faster correct answers earn more points.</p>
+        </div>
+
+        <div id="challenge-lobby-screen" class="challenge-card">
+          <h2>Multiplayer Challenge</h2>
+          <label class="field-label" for="challenge-topic">Select Topic</label>
+          <select id="challenge-topic" class="input-control">
+            <option value="simple_present">Simple Present Tense</option>
+            <option value="simple_past">Simple Past Tense</option>
+            <option value="present_continuous">Present Continuous Tense</option>
+            <option value="present_perfect">Present Perfect Tense</option>
+          </select>
+
+          <label class="field-label" for="challenge-count">Number of Questions</label>
+          <select id="challenge-count" class="input-control">
+            <option value="5">5 Questions</option>
+            <option value="10">10 Questions</option>
+            <option value="15">15 Questions</option>
+          </select>
+
+          <div class="challenge-action-row">
+            <button id="btn-create-challenge" class="primary" type="button">Host Match</button>
+            <div class="challenge-join-box">
+              <input type="text" id="join-room-code" placeholder="ROOM CODE" class="input-control uppercase" maxlength="6" autocomplete="off">
+              <button id="btn-join-challenge" class="secondary" type="button">Join</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="challenge-waiting-screen" class="challenge-card hidden">
+          <h2>Challenge Lobby</h2>
+          <p class="muted">Share this room code with your opponents:</p>
+          <div class="challenge-room-code" id="display-room-code">------</div>
+          <h3>Connected Players (<span id="player-count">1</span>)</h3>
+          <div id="connected-players-list" class="challenge-players"></div>
+          <button id="btn-start-challenge" class="primary hidden" type="button">Start Contest</button>
+        </div>
+
+        <div id="challenge-arena-screen" class="hidden">
+          <div class="challenge-scoreboard">
+            <div id="live-ranking-chips" class="challenge-ranking"></div>
+            <div class="challenge-timer">Time: <span id="question-timer">10s</span></div>
+          </div>
+          <div class="challenge-card">
+            <div id="live-question-index" class="question-tracker">Question 1</div>
+            <h3 id="live-question-text" class="challenge-question"></h3>
+            <div id="live-options-container" class="challenge-options"></div>
+          </div>
+        </div>
+
+        <div id="challenge-results-screen" class="challenge-card hidden">
+          <h2>🏆 Match Standings</h2>
+          <table class="challenge-rankings">
+            <thead><tr><th>Rank</th><th>Player</th><th>Final Score</th></tr></thead>
+            <tbody id="final-rankings-body"></tbody>
+          </table>
+          <button id="btn-exit-challenge" class="secondary" type="button">Back to Challenge Lobby</button>
+        </div>
+      </section>
+
       <section id="review" class="screen"><div class="page-title"><p class="eyebrow">SMART REVIEW</p><h1>Your practice queue</h1><p class="muted">Questions you missed are collected here for targeted revision.</p></div><div id="reviewContent" class="review-grid"></div></section>
       <section id="profile" class="screen narrow"><div class="profile-header"><h1>Profile</h1><button class="icon-btn" data-screen="dashboard" aria-label="Close">✕</button></div>
         <div class="profile-card">
@@ -71,6 +137,24 @@
           <h2 id="profileName">Guest learner</h2>
           <p class="muted" id="profileEmail"></p>
           <button class="pill-btn" id="profileLogoutBtn">↪ Log out</button>
+
+          <div class="profile-customize">
+            <h2>Customize Player</h2>
+            <p class="muted">Choose the name and avatar shown in Live Challenges.</p>
+            <label class="field-label" for="profile-username">Player Username</label>
+            <input type="text" id="profile-username" class="input-control" maxlength="30" placeholder="Enter custom username">
+            <label class="field-label">Choose Your Avatar</label>
+            <div class="challenge-avatar-grid" id="avatar-picker">
+              <button class="challenge-avatar-option selected" type="button" data-avatar="🤖">🤖</button>
+              <button class="challenge-avatar-option" type="button" data-avatar="🦊">🦊</button>
+              <button class="challenge-avatar-option" type="button" data-avatar="⚡">⚡</button>
+              <button class="challenge-avatar-option" type="button" data-avatar="🧙‍♂️">🧙‍♂️</button>
+              <button class="challenge-avatar-option" type="button" data-avatar="🚀">🚀</button>
+              <button class="challenge-avatar-option" type="button" data-avatar="👑">👑</button>
+            </div>
+            <button id="save-profile-btn" class="primary" type="button">Save Profile</button>
+          </div>
+
           <div class="profile-tabs"><button class="pill-tab active">Overview</button><button class="pill-tab">My Statistics</button></div>
           <div class="profile-streak-card"><span class="profile-streak-icon">🔥</span><div><strong id="profileStreak">0 Days</strong><small>Streak</small></div></div>
           <div class="profile-stats-grid">
@@ -96,6 +180,6 @@
     </main><footer>LearnTense · Learn English tenses by practicing</footer>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/app.js"></script><script src="js/runtime-fixes.js"></script><script src="js/lesson-content.js"></script><script src="js/simple-present-games.js"></script><script src="js/gamify.js"></script><script src="js/ui-revamp.js"></script><script src="js/eras.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/app.js"></script><script src="js/challenge.js"></script><script src="js/runtime-fixes.js"></script><script src="js/lesson-content.js"></script><script src="js/simple-present-games.js"></script><script src="js/gamify.js"></script><script src="js/ui-revamp.js"></script><script src="js/eras.js"></script>
 <script>document.addEventListener('DOMContentLoaded',()=>{const p=document.getElementById('passwordToggle'),input=document.getElementById('authPassword');if(p&&input)p.addEventListener('click',()=>{input.type=input.type==='password'?'text':'password';});});</script>
 </body></html>
