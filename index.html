@@ -26,15 +26,10 @@
         <button class="nav-btn" data-screen="review"><span class="nav-icon">🔄</span><span class="nav-label">Review</span></button>
         <button class="nav-btn" data-screen="profile"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
       </nav>
-      <div class="top-actions">
+      <div class="top-actions" hidden>
         <span id="userLabel" class="user-label"></span>
-        <div class="overflow-wrap">
-          <button class="icon-btn" id="overflowBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More options">⋯</button>
-          <div class="overflow-menu" id="overflowMenu" hidden>
-            <button class="overflow-item" id="themeBtn" type="button">🌙 <span>Toggle theme</span></button>
-            <button class="overflow-item" id="logoutBtn" type="button">↪ <span>Log out</span></button>
-          </div>
-        </div>
+        <button class="icon-btn" id="themeBtn" type="button">🌙</button>
+        <button class="icon-btn" id="logoutBtn" type="button">↪</button>
       </div>
     </header>
     <main>
@@ -54,15 +49,13 @@
         </div>
       </section>
       <section id="discover" class="screen">
-        <div class="page-title"><p class="eyebrow">PRACTICE HUB</p><h1>How you're doing</h1><p class="muted">Your stats, what to practice next, and where you left off.</p></div>
-        <div class="home-search"><span>🔍</span><input type="text" id="tenseSearch" placeholder="Search a tense…" autocomplete="off"><div id="tenseSearchResults" class="home-search-results"></div></div>
-        <div class="stats-grid"><article class="stat"><span>🎯</span><strong id="accuracyStat">—</strong><small>Accuracy</small></article><article class="stat"><span>🔥</span><strong id="streakStat">0</strong><small>Day streak</small></article><article class="stat"><span>📚</span><strong id="masteredStat">0/12</strong><small>Tenses mastered</small></article><article class="stat"><span>✅</span><strong id="answeredStat">0</strong><small>Questions answered</small></article></div>
-        <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div><article class="continue-card" id="continueCard"></article>
-        <div class="two-col"><section class="panel"><div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div><div id="progressList" class="progress-list"></div></section><section class="panel practice-panel"><p class="eyebrow">SMART PRACTICE</p><h2>Practice what needs work</h2><p class="muted">Review questions you missed and strengthen your weakest tense.</p><button class="secondary" id="weakBtn">🧠 Practice weak areas</button><button class="secondary" id="mistakesBtn">🔄 Review mistakes</button></section></div>
+        <div class="page-title"><p class="eyebrow">LEADERBOARD</p><h1>See how you rank</h1><p class="muted">Ranked by total points earned from practice across every tense.</p></div>
+        <div id="leaderboardContent"></div>
       </section>
       <section id="library" class="screen era-screen" data-era="present">
         <button class="back-btn" data-screen="dashboard">← Back to topics</button>
         <div class="page-title"><p class="eyebrow">GRAMMAR LIBRARY</p><h1>Travel through time to learn all 12 tenses</h1><p class="muted">Pick an era, then complete its 4 stages: Simple → Continuous → Perfect → Perfect Continuous.</p></div>
+        <div class="home-search"><span>🔍</span><input type="text" id="tenseSearch" placeholder="Search a tense…" autocomplete="off"><div id="tenseSearchResults" class="home-search-results"></div></div>
         <div class="era-tabs" id="eraTabs"></div>
         <div class="era-guide" id="eraGuide"></div>
         <div class="era-path" id="eraPath"></div>
@@ -87,8 +80,17 @@
             <article class="stat"><span>⭐</span><strong id="profileLevel">Lv 1</strong><small>XP level</small></article>
           </div>
           <button class="secondary" id="profileThemeBtn">🌙 Toggle dark mode</button>
+          <button class="secondary" id="profileSoundBtn" type="button">🔊 Sound on</button>
           <button class="secondary" id="parentViewBtn">👨‍👩‍👧 Parent / teacher view</button>
           <div class="parent-view" id="parentView" hidden></div>
+          <div class="stat-mirror" hidden><strong id="accuracyStat">—</strong><strong id="streakStat">0</strong><strong id="masteredStat">0/12</strong><strong id="answeredStat">0</strong></div>
+          <div class="section-head"><div><p class="eyebrow">RECOMMENDED</p><h2>Continue learning</h2></div></div>
+          <article class="continue-card" id="continueCard"></article>
+          <div class="section-head"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Tense mastery</h2></div><button class="text-btn" data-screen="library">View all</button></div>
+          <div id="progressList" class="progress-list"></div>
+          <p class="eyebrow" style="margin-top:18px">SMART PRACTICE</p>
+          <button class="secondary" id="weakBtn">🧠 Practice weak areas</button>
+          <button class="secondary" id="mistakesBtn">🔄 Review mistakes</button>
         </div>
       </section>
     </main><footer>LearnTense · Learn English tenses by practicing</footer>
