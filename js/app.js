@@ -68,3 +68,57 @@ function renderReview(){const list=mistakes||[];$('reviewContent').innerHTML=lis
 function startWeakPractice(){const weak=tenses.slice().sort((a,b)=>mastery(a.id)-mastery(b.id))[0];startQuiz(weak?.id||1)}
 async function initAuth(){try{const{data}=await db.auth.getUser();currentUser=data.user||null;db.auth.onAuthStateChange((_e,session)=>{currentUser=session?.user||null;if(currentUser){isGuest=false;openApp()}else if(!isGuest)showAuth();loadProgress()});if(currentUser)openApp();else if(!isGuest)showAuth()}catch(e){showAuth()}}
 (async()=>{await initAuth()})();
+
+// Live Challenge + profile initialization.
+document.addEventListener('DOMContentLoaded', () => {
+  let selectedAvatar = '🤖';
+
+  const readProfile = () => {
+    try {
+      return JSON.parse(localStorage.getItem('user_profile') || '{"displayName":"Player","avatar":"🤖"}');
+    } catch (_) {
+      return { displayName: 'Player', avatar: '🤖' };
+    }
+  };
+
+  const profile = readProfile();
+  selectedAvatar = profile.avatar || '🤖';
+  const usernameInput = $('profile-username');
+  if (usernameInput) usernameInput.value = profile.displayName || '';
+
+  document.querySelectorAll('.challenge-avatar-option').forEach(option => {
+    option.classList.toggle('selected', option.dataset.avatar === selectedAvatar);
+    option.addEventListener('click', () => {
+      document.querySelectorAll('.challenge-avatar-option').forEach(o => o.classList.remove('selected'));
+      option.classList.add('selected');
+      selectedAvatar = option.dataset.avatar || '🤖';
+    });
+  });
+
+  $('save-profile-btn')?.addEventListener('click', async () => {
+    const displayName = usernameInput?.value.trim();
+    if (!displayName) return alert('Please enter a username.');
+
+    const profileData = { displayName, avatar: selectedAvatar };
+    localStorage.setItem('user_profile', JSON.stringify(profileData));
+
+    if (currentUser) {
+      const { error } = await db.from('profiles').upsert({
+        id: currentUser.id,
+        display_name: displayName,
+        avatar_url: selectedAvatar
+      }, { onConflict: 'id' });
+      if (error) console.warn('Profile save failed:', error.message);
+    }
+
+    if ($('profileName')) $('profileName').textContent = displayName;
+    if ($('homeAvatar')) $('homeAvatar').textContent = selectedAvatar;
+    if ($('profileAvatar')) $('profileAvatar').textContent = selectedAvatar;
+    if ($('greetingName')) $('greetingName').textContent = `Hello ${displayName} 👋`;
+    alert('Profile saved successfully!');
+  });
+
+  if (window.ChallengeArena && !window.arena) {
+    window.arena = new ChallengeArena(db);
+  }
+});
