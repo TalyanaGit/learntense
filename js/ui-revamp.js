@@ -49,6 +49,7 @@
       if (xpBadge) { const m = xpBadge.textContent.match(/Lv\s*(\d+)/); pLevel.textContent = m ? `Lv ${m[1]}` : 'Lv 1'; }
       else pLevel.textContent = 'Lv 1';
     }
+    syncProfileSound();
   }
 
   // Search-as-you-type over the tense list
@@ -79,8 +80,22 @@
     if (logoutBtn && !logoutBtn.dataset.wired) { logoutBtn.dataset.wired = '1'; logoutBtn.onclick = () => document.getElementById('logoutBtn').click(); }
     const themeBtn = document.getElementById('profileThemeBtn');
     if (themeBtn && !themeBtn.dataset.wired) { themeBtn.dataset.wired = '1'; themeBtn.onclick = () => document.getElementById('themeBtn').click(); }
+    const soundBtn = document.getElementById('profileSoundBtn');
+    if (soundBtn && !soundBtn.dataset.wired) {
+      soundBtn.dataset.wired = '1';
+      soundBtn.onclick = () => { const src = document.getElementById('ltSoundBtn'); if (src) { src.click(); syncProfileSound(); } };
+    }
+    syncProfileSound();
     const tabs = document.querySelectorAll('.profile-tabs .pill-tab');
     tabs.forEach(tab => { if (!tab.dataset.wired) { tab.dataset.wired = '1'; tab.onclick = () => tabs.forEach(t => t.classList.toggle('active', t === tab)); } });
+  }
+
+  function syncProfileSound() {
+    const soundBtn = document.getElementById('profileSoundBtn');
+    const src = document.getElementById('ltSoundBtn');
+    if (!soundBtn) return;
+    const on = src ? src.textContent.trim() === '🔊' : true;
+    soundBtn.textContent = on ? '🔊 Sound on' : '🔇 Sound off';
   }
 
   function wrap(name, fn) {
